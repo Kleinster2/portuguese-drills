@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portuguese Grammar Drills</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .drill-card {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.5s ease-out, transform 0.3s ease;
+        }
+        .drill-card.hidden {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            transform: scale(0.9);
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals & Calming Blue -->
+    <!-- Application Structure Plan: A responsive card-based grid layout presenting each GPT drill as a distinct, interactive element. The structure is organized by topic (Core Verbs, Tenses, Grammar) to guide the user's exploration. This is more flexible than a level-based system. Interactive filters will allow users to focus on a specific topic, enhancing usability. -->
+    <!-- Visualization & Content Choices: The primary content is a list of learning tools. Goal: Inform & Navigate. Presentation: Interactive cards, each containing a title, description, and topic badge. Interaction: Cards have a button that links to the drill. Filter buttons will use JS to dynamically show/hide cards based on topic. This card-based approach is superior to a simple list for scannability and creating a sense of distinct 'tools'. Unicode icons (📚, 💡, 🔗) will be used to add visual interest. No SVG/Mermaid used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900">Portuguese Grammar Drills</h1>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">
+                Welcome! Here you will find a series of focused practice drills to help you test key concepts in Brazilian Portuguese. Click on any tutor to start practicing.
+            </p>
+        </header>
+
+        <main>
+            <!-- Filter Controls -->
+            <div id="filter-controls" class="flex justify-center items-center gap-2 sm:gap-4 mb-12 flex-wrap">
+                <button data-filter="all" class="filter-btn active bg-blue-600 text-white rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">All Drills</button>
+                <button data-filter="verbs" class="filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Core Verbs</button>
+                <button data-filter="tenses" class="filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Tenses & Structures</button>
+                <button data-filter="grammar" class="filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Grammar & Prepositions</button>
+            </div>
+
+            <!-- Drill Cards Grid -->
+            <div id="drill-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Card: -ar Verbs -->
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs">
+                    <div class="p-6 flex-grow">
+                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span>
+                        <h2 class="text-xl font-bold text-slate-900 mb-2">📚 PT-BR Verb Drill: Regular `-ar` Verbs</h2>
+                        <p class="text-slate-600 text-base flex-grow">Practice the most common regular verb conjugation.</p>
+                    </div>
+                    <div class="p-6 bg-slate-50">
+                        <a href="https://chatgpt.com/g/g-6843fd1dc34c81918f41652618a9f818-regular-ar-verb-tutor-pt-br" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a>
+                    </div>
+                </div>
+
+                <!-- Card: -er Verbs -->
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs">
+                    <div class="p-6 flex-grow">
+                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span>
+                        <h2 class="text-xl font-bold text-slate-900 mb-2">📚 PT-BR Verb Drill: Regular `-er` Verbs</h2>
+                        <p class="text-slate-600 text-base flex-grow">Master the second regular verb conjugation.</p>
+                    </div>
+                    <div class="p-6 bg-slate-50">
+                        <a href="https://chatgpt.com/g/g-6849b1e01e488191aaa00c0c36ceb823-regular-er-verb-tutor-pt-br" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a>
+                    </div>
+                </div>
+
+                <!-- Card: -ir Verbs -->
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs">
+                    <div class="p-6 flex-grow">
+                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span>
+                        <h2 class="text-xl font-bold text-slate-900 mb-2">📚 PT-BR Verb Drill: Regular `-ir` Verbs</h2>
+                        <p class="text-slate-600 text-base flex-grow">Complete your knowledge of regular verb endings.</p>
+                    </div>
+                    <div class="p-6 bg-slate-50">
+                        <a href="https://chatgpt.com/g/g-684d9e2cb98881919da015545cb59763-regular-ir-verb-tutor-pt-br" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a>
+                    </div>
+                </div>
+
+                <!-- Card: Irregular Verbs -->
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs">
+                    <div class="p-6 flex-grow">
+                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span>
+                        <h2 class="text-xl font-bold text-slate-900 mb-2">📚 PT-BR Irregular Verb Drill</h2>
+                        <p class="text-slate-600 text-base flex-grow">Memorize the forms for Brazil's most important irregular verbs (ser, estar, ir, ter, etc.).</p>
+                    </div>
+                    <div class="p-6 bg-slate-50">
+                         <a href="https://chatgpt.com/g/g-684de064ed18819185f93e62e019a476-pt-br-irregular-verb-drill" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a>
+                    </div>
+                </div>
+
+                <!-- Card: Imperfect Tense -->
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses">
+                    <div class="p-6 flex-grow">
+                        <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
+                        <h2 class="text-xl font-bold text-slate-900 mb-2">💡 PT-BR Imperfect Tense Drill</h2>
+                        <p class="text-slate-600 text-base flex-grow">Practice the simple form ("used to do"), the past continuous ("was doing"), and the past intent ("was going to do").</p>
+                    </div>
+                    <div class="p-6 bg-slate-50">
+                         <a href="https://chatgpt.com/g/g-684e33d54fc081919967634436a497bd-pt-br-imperfect-tense-drill" target="_blank" class="block w-full text-center bg-green-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-green-700 transition-colors">Start Drill</a>
+                    </div>
+                </div>
+
+                <!-- Card: Present Continuous -->
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses">
+                    <div class="p-6 flex-grow">
+                        <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
+                        <h2 class="text-xl font-bold text-slate-900 mb-2">💡 PT-BR Present Continuous Tense Drill</h2>
+                        <p class="text-slate-600 text-base flex-grow">Master the Portuguese "ing" form (`-ndo`). A focused drill for practicing the Present Continuous tense (`estar` + gerund).</p>
+                    </div>
+                    <div class="p-6 bg-slate-50">
+                         <a href="https://chatgpt.com/g/g-684dbb9756848191b3befa3b9b6b4a90-pt-br-present-continuous-tense-drill" target="_blank" class="block w-full text-center bg-green-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-green-700 transition-colors">Start Drill</a>
+                    </div>
+                </div>
+
+                <!-- Card: Crase -->
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
+                    <div class="p-6 flex-grow">
+                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
+                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 PT-BR Crase (`à`) Tutor</h2>
+                        <p class="text-slate-600 text-base flex-grow">A dedicated drill for mastering the Brazilian Portuguese crase. Learn when to use `à` and `às` with instant feedback.</p>
+                    </div>
+                    <div class="p-6 bg-slate-50">
+                         <a href="https://chatgpt.com/g/g-684e4859222881918d88d2766f1761f3-pt-br-crase-drill" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
+                    </div>
+                </div>
+
+                <!-- Card: Contractions -->
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
+                    <div class="p-6 flex-grow">
+                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
+                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 PT-BR Contraction Trainer (`de` & `em`)</h2>
+                        <p class="text-slate-600 text-base flex-grow">Master the common contractions of prepositions `de` (of/from) and `em` (in/on/at) with articles (do, da, no, na).</p>
+                    </div>
+                    <div class="p-6 bg-slate-50">
+                        <a href="https://chatgpt.com/g/g-683eb02e32248191a6da5c6669d79697-portuguese-contraction-trainer-de-em" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const filterControls = document.getElementById('filter-controls');
+        const drillCards = document.querySelectorAll('.drill-card');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+
+        filterControls.addEventListener('click', (event) => {
+            if (event.target.tagName !== 'BUTTON') return;
+
+            const filterValue = event.target.dataset.filter;
+            
+            filterButtons.forEach(button => {
+                if (button.dataset.filter === filterValue) {
+                    button.classList.add('active', 'bg-blue-600', 'text-white');
+                    button.classList.remove('bg-white', 'text-slate-700', 'hover:bg-slate-100');
+                } else {
+                    button.classList.remove('active', 'bg-blue-600', 'text-white');
+                    button.classList.add('bg-white', 'text-slate-700', 'hover:bg-slate-100');
+                }
+            });
+            
+            drillCards.forEach(card => {
+                const cardTopic = card.dataset.topic;
+                if (filterValue === 'all' || cardTopic === filterValue) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
