@@ -26,8 +26,8 @@
         }
     </style>
     <!-- Chosen Palette: Warm Neutrals & Calming Blue -->
-    <!-- Application Structure Plan: A responsive card-based grid layout presenting each GPT drill as a distinct, interactive element. The structure is organized by topic (Core Verbs, Tenses, Grammar) to guide the user's exploration. This is more flexible than a level-based system. Interactive filters will allow users to focus on a specific topic, enhancing usability. -->
-    <!-- Visualization & Content Choices: The primary content is a list of learning tools. Goal: Inform & Navigate. Presentation: Interactive cards, each containing a title, description, and topic badge. Interaction: Cards have a button that links to the drill. Filter buttons will use JS to dynamically show/hide cards based on topic. This card-based approach is superior to a simple list for scannability and creating a sense of distinct 'tools'. Unicode icons (📚, 💡, 🔗) will be used to add visual interest. No SVG/Mermaid used. -->
+    <!-- Application Structure Plan: A responsive card-based grid layout presenting each GPT drill as a distinct, interactive element. The structure is organized by topic (Core Verbs, Tenses, Grammar, Pronunciation) to guide the user's exploration. Interactive filters allow users to focus on a specific topic. -->
+    <!-- Visualization & Content Choices: The primary content is a list of learning tools. Goal: Inform & Navigate. Presentation: Interactive cards, each containing a title, description, and topic badge. Interaction: Cards have a button that links to the drill. Filter buttons will use JS to dynamically show/hide cards based on topic. Unicode icons (📚, 💡, 🔗, 🔊) add visual interest. No SVG/Mermaid used. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 </head>
 <body class="bg-slate-50 text-slate-800">
@@ -48,6 +48,7 @@
                 <button data-filter="verbs" class="filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Core Verbs</button>
                 <button data-filter="tenses" class="filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Tenses & Structures</button>
                 <button data-filter="grammar" class="filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Grammar & Prepositions</button>
+                <button data-filter="pronunciation" class="filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Pronunciation</button>
             </div>
 
             <!-- Drill Cards Grid -->
@@ -136,6 +137,18 @@
                          <a href="https://chatgpt.com/g/g-your-adjective-gpt-link-here" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
                     </div>
                 </div>
+                
+                <!-- Card: Demonstratives -->
+                 <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
+                    <div class="p-6 flex-grow">
+                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
+                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 PT-BR Demonstratives Drill</h2>
+                        <p class="text-slate-600 text-base flex-grow">Master the tricky distinction between `este` (near me), `esse` (near you), and `aquele` (over there).</p>
+                    </div>
+                    <div class="p-6 bg-slate-50">
+                         <a href="https://chatgpt.com/g/g-68502a83a16081919fce4e9e15af760c-pt-br-demonstratives-drill" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
+                    </div>
+                </div>
 
                 <!-- Card: Crase -->
                 <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
@@ -158,6 +171,18 @@
                     </div>
                     <div class="p-6 bg-slate-50">
                         <a href="https://chatgpt.com/g/g-683eb02e32248191a6da5c6669d79697-portuguese-contraction-trainer-de-em" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
+                    </div>
+                </div>
+                
+                 <!-- Card: Syllable Stress -->
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="pronunciation">
+                    <div class="p-6 flex-grow">
+                        <span class="inline-block bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Pronunciation</span>
+                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔊 PT-BR Syllable Stress Drill</h2>
+                        <p class="text-slate-600 text-base flex-grow">Master Portuguese syllable stress for perfect pronunciation. Learn the rules for stress and accent marks.</p>
+                    </div>
+                    <div class="p-6 bg-slate-50">
+                         <a href="https://chatgpt.com/g/g-68503ae6d6908191999ca8256553d143-pt-br-syllable-stress-drill" target="_blank" class="block w-full text-center bg-orange-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-orange-700 transition-colors">Start Drill</a>
                     </div>
                 </div>
 
