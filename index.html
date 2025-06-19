@@ -26,7 +26,7 @@
         }
     </style>
     <!-- Chosen Palette: Warm Neutrals & Calming Blue -->
-    <!-- Application Structure Plan: A responsive card-based grid layout presenting each GPT drill. The structure is organized purely by topic to allow for user-driven exploration. Interactive filters allow users to focus on a specific topic. -->
+    <!-- Application Structure Plan: A responsive card-based grid layout presenting each GPT drill as a distinct, interactive element. The structure is organized purely by topic (Core Verbs, Tenses, Grammar, etc.) to allow for user-driven exploration. Interactive filters allow users to focus on a specific topic. -->
     <!-- Visualization & Content Choices: The primary content is a list of learning tools. Goal: Inform & Navigate. Presentation: Interactive cards, each containing a title, description, and a single topic badge. Interaction: Topic filter buttons use JS to dynamically show/hide cards. Card buttons link to drills. Unicode icons (📚, 💡, 🔗, 🔊, 💬) add visual interest. No SVG/Mermaid used. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 </head>
@@ -54,30 +54,6 @@
 
             <!-- Drill Cards Grid -->
             <div id="drill-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-                 <!-- Card: Self-Introduction -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💬 PT-BR Self-Introduction Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">For absolute beginners. Practice building your first sentences (`Eu sou...`, `Eu moro...`, etc.).</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-your-self-intro-gpt-link-here" target="_blank" class="block w-full text-center bg-teal-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-teal-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Conversational Answers -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💬 PT-BR Conversational Answers Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Learn to answer yes/no questions like a Brazilian by repeating the verb. Covers simple and emphatic answers.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                         <a href="https://chatgpt.com/g/g-your-convo-answers-gpt-link-here" target="_blank" class="block w-full text-center bg-teal-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-teal-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
 
                 <!-- Card: -ar Verbs -->
                 <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs">
@@ -126,7 +102,7 @@
                          <a href="https://chatgpt.com/g/g-684de064ed18819185f93e62e019a476-pt-br-irregular-verb-drill" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a>
                     </div>
                 </div>
-
+                
                 <!-- Card: Present Continuous -->
                 <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses">
                      <div class="p-6 flex-grow">
@@ -150,18 +126,6 @@
                          <a href="https://chatgpt.com/g/g-684e33d54fc081919967634436a497bd-pt-br-imperfect-tense-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a>
                     </div>
                 </div>
-
-                <!-- Card: Syllable Stress -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="pronunciation">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Pronunciation</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔊 Syllable Stress Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master Portuguese syllable stress for perfect pronunciation. Learn the rules for stress and accent marks.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                         <a href="https://chatgpt.com/g/g-68503ae6d6908191999ca8256553d143-pt-br-syllable-stress-drill" target="_blank" class="block w-full text-center bg-orange-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-orange-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
                 
                 <!-- Card: Adjective Agreement -->
                  <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
@@ -171,7 +135,7 @@
                         <p class="text-slate-600 text-base flex-grow">Practice making adjectives match the gender and number of the nouns they describe.</p>
                     </div>
                     <div class="p-6 bg-slate-50">
-                         <a href="https://chatgpt.com/g/g-684f479d70848191b7e2d2842616ddfc-pt-br-adjective-agreement-drill" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
+                         <a href="https://chatgpt.com/g/g-your-adjective-gpt-link-here" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
                     </div>
                 </div>
                 
@@ -222,6 +186,31 @@
                         <a href="https://chatgpt.com/g/g-68504e10a73c819182ee54bfa732c5ab-pt-br-nele-nela-neles-nelas" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
                     </div>
                 </div>
+                
+                <!-- Card: Syllable Stress -->
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="pronunciation">
+                    <div class="p-6 flex-grow">
+                        <span class="inline-block bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Pronunciation</span>
+                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔊 Syllable Stress Drill</h2>
+                        <p class="text-slate-600 text-base flex-grow">Master Portuguese syllable stress for perfect pronunciation. Learn the rules for stress and accent marks.</p>
+                    </div>
+                    <div class="p-6 bg-slate-50">
+                         <a href="https://chatgpt.com/g/g-68503ae6d6908191999ca8256553d143-pt-br-syllable-stress-drill" target="_blank" class="block w-full text-center bg-orange-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-orange-700 transition-colors">Start Drill</a>
+                    </div>
+                </div>
+                
+                 <!-- Card: Conversational Answers -->
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation">
+                    <div class="p-6 flex-grow">
+                        <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span>
+                        <h2 class="text-xl font-bold text-slate-900 mb-2">💬 Conversational Answers Drill</h2>
+                        <p class="text-slate-600 text-base flex-grow">Learn to answer yes/no questions like a Brazilian by repeating the verb. Covers simple and emphatic answers.</p>
+                    </div>
+                    <div class="p-6 bg-slate-50">
+                         <a href="https://chatgpt.com/g/g-your-convo-answers-gpt-link-here" target="_blank" class="block w-full text-center bg-teal-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-teal-700 transition-colors">Start Drill</a>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
