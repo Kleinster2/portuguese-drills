@@ -25,10 +25,17 @@
             transform: scale(0.9);
         }
     </style>
-    <!-- Chosen Palette: Warm Neutrals & Calming Blue -->
-    <!-- Application Structure Plan: A responsive card-based grid layout presenting each GPT drill as a distinct, interactive element. The structure is organized purely by topic to allow for user-driven exploration. Interactive filters allow users to focus on a specific topic. -->
-    <!-- Visualization & Content Choices: The primary content is a list of learning tools. Goal: Inform & Navigate. Presentation: Interactive cards, each containing a title, description, and a single topic badge. Interaction: Topic filter buttons use JS to dynamically show/hide cards. Card buttons link to drills. Unicode icons (📚, 💡, 🔗, 🔊, 💬) add visual interest. No SVG/Mermaid used. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- 
+        Chosen Palette: Warm Neutrals & Calming Blue 
+        Application Structure Plan: A responsive card-based grid layout presenting each GPT drill as a distinct, interactive element. 
+        The structure is organized purely by topic to allow for user-driven exploration. 
+        Interactive filters allow users to focus on a specific topic.
+        Visualization & Content Choices: The primary content is a list of learning tools. Goal: Inform & Navigate. 
+        Presentation: Interactive cards, each containing a title, description, and a single topic badge. 
+        Interaction: Topic filter buttons use JS to dynamically show/hide cards. Card buttons link to drills. 
+        Unicode icons (📚, 💡, 🔗, 🔊, 💬) add visual interest. No SVG/Mermaid used.
+        CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
 </head>
 <body class="bg-slate-50 text-slate-800">
 
@@ -294,6 +301,18 @@
                         <a href="https://chatgpt.com/g/g-68504e10a73c819182ee54bfa732c5ab-pt-br-nele-nela-neles-nelas" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
                     </div>
                 </div>
+
+                <!-- NEW Card: Contractions (de/em + articles) -->
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
+                    <div class="p-6 flex-grow">
+                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
+                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Contractions with Articles (de/em)</h2>
+                        <p class="text-slate-600 text-base flex-grow">Learn how “de” and “em” contract with articles using step-by-step fill-in-the-blank drills.</p>
+                    </div>
+                    <div class="p-6 bg-slate-50">
+                        <a href="https://chatgpt.com/g/g-683eb02e32248191a6da5c6669d79697-pt-br-contraction-trainer-de-em" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
+                    </div>
+                </div>
                 
                 <!-- Card: Syllable Stress -->
                 <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="pronunciation">
@@ -348,17 +367,20 @@
     </div>
 
     <script>
+        // This script handles the filtering logic for the drill cards.
         document.addEventListener('DOMContentLoaded', () => {
             const filterControls = document.getElementById('filter-controls');
             const drillCards = document.querySelectorAll('.drill-card');
             const filterButtons = document.querySelectorAll('.filter-btn');
 
+            // Listen for clicks on the filter button container.
             filterControls.addEventListener('click', (event) => {
                 const targetButton = event.target.closest('button');
-                if (!targetButton) return;
+                if (!targetButton) return; // Ignore clicks that aren't on a button.
 
                 const filterValue = targetButton.dataset.filter;
                 
+                // Update the active state of the filter buttons.
                 filterButtons.forEach(button => {
                     button.classList.toggle('active', button === targetButton);
                     button.classList.toggle('bg-blue-600', button === targetButton);
@@ -368,6 +390,7 @@
                     button.classList.toggle('hover:bg-slate-100', button !== targetButton);
                 });
                 
+                // Show or hide cards based on the selected filter.
                 drillCards.forEach(card => {
                     const cardTopic = card.dataset.topic;
                     if (filterValue === 'all' || cardTopic === filterValue) {
