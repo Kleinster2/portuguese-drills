@@ -28,3 +28,6 @@ Designed to be dialect-neutral (PT-PT and PT-BR).\r\n\r\n- Live site: https://kl
 ## Dialects
 Drills default to Brazilian Portuguese. You can ask any tutor to respond in European Portuguese.
 
+
+## Backend (Cloudflare Pages Functions)
+This site includes an optional grading endpoint at \/api/grade\ implemented as a Cloudflare Pages Function.\r\n- Add an environment variable \OPENAI_API_KEY\ in Pages → Settings → Environment variables.\r\n- Functions live under \unctions/api/\. The endpoint accepts JSON: {drillId, prompt, answer, dialect:'BR'|'PT'}.\r\n- Local dev: \wrangler pages dev\ (installs Wrangler) or use Pages preview.\r\n- CORS allows your GitHub Pages origin and localhost:8788. Adjust in \unctions/api/grade.ts\.\r\n
