@@ -447,9 +447,91 @@
         </main>
     </div>
 
-    <script>\n//\ Consolidated\ filtering/search,\ accessibility,\ persistence,\ and\ results\ count\ndocument\.addEventListener\('DOMContentLoaded',\ \(\)\ =>\ \{\n\ \ const\ filterControls\ =\ document\.getElementById\('filter-controls'\);\n\ \ const\ drillCards\ =\ document\.querySelectorAll\('\.drill-card'\);\n\ \ const\ filterButtons\ =\ document\.querySelectorAll\('\.filter-btn'\);\n\ \ const\ searchInput\ =\ document\.getElementById\('search-input'\);\n\ \ const\ resultsCount\ =\ document\.getElementById\('results-count'\);\n\n\ \ let\ currentFilter\ =\ 'all';\n\n\ \ function\ setFilterButtonStates\(activeButton\)\ \{\n\ \ \ \ filterButtons\.forEach\(button\ =>\ \{\n\ \ \ \ \ \ const\ isActive\ =\ button\ ===\ activeButton;\n\ \ \ \ \ \ button\.classList\.toggle\('active',\ isActive\);\n\ \ \ \ \ \ button\.classList\.toggle\('bg-blue-600',\ isActive\);\n\ \ \ \ \ \ button\.classList\.toggle\('text-white',\ isActive\);\n\ \ \ \ \ \ button\.classList\.toggle\('bg-white',\ !isActive\);\n\ \ \ \ \ \ button\.classList\.toggle\('text-slate-700',\ !isActive\);\n\ \ \ \ \ \ button\.classList\.toggle\('hover:bg-slate-100',\ !isActive\);\n\ \ \ \ \ \ button\.setAttribute\('aria-pressed',\ isActive\ \?\ 'true'\ :\ 'false'\);\n\ \ \ \ }\);\n\ \ }\n\n\ \ function\ updateVisibleCards\(\)\ \{\n\ \ \ \ const\ searchTerm\ =\ \(searchInput\?\.value\ \|\|\ ''\)\.toLowerCase\(\);\n\ \ \ \ let\ visible\ =\ 0;\n\n\ \ \ \ drillCards\.forEach\(card\ =>\ \{\n\ \ \ \ \ \ const\ cardTopic\ =\ card\.dataset\.topic;\n\ \ \ \ \ \ const\ cardTitle\ =\ card\.querySelector\('h2'\)\?\.textContent\.toLowerCase\(\)\ \|\|\ '';\n\ \ \ \ \ \ const\ cardDescription\ =\ card\.querySelector\('p'\)\?\.textContent\.toLowerCase\(\)\ \|\|\ '';\n\n\ \ \ \ \ \ const\ matchesFilter\ =\ currentFilter\ ===\ 'all'\ \|\|\ cardTopic\ ===\ currentFilter;\n\ \ \ \ \ \ const\ matchesSearch\ =\ cardTitle\.includes\(searchTerm\)\ \|\|\ cardDescription\.includes\(searchTerm\);\n\n\ \ \ \ \ \ if\ \(matchesFilter\ &&\ matchesSearch\)\ \{\n\ \ \ \ \ \ \ \ card\.classList\.remove\('hidden'\);\n\ \ \ \ \ \ \ \ visible\+\+;\n\ \ \ \ \ \ }\ else\ \{\n\ \ \ \ \ \ \ \ card\.classList\.add\('hidden'\);\n\ \ \ \ \ \ }\n\ \ \ \ }\);\n\n\ \ \ \ if\ \(resultsCount\)\ \{\n\ \ \ \ \ \ resultsCount\.textContent\ =\ \$\{visible}\ \ shown;\n\ \ \ \ }\n\ \ }\n\n\ \ //\ Restore\ saved\ state\ first\n\ \ try\ \{\n\ \ \ \ const\ savedFilter\ =\ localStorage\.getItem\('pd_currentFilter'\);\n\ \ \ \ const\ savedSearch\ =\ localStorage\.getItem\('pd_search'\);\n\ \ \ \ if\ \(savedSearch\ &&\ searchInput\)\ searchInput\.value\ =\ savedSearch;\n\ \ \ \ const\ targetButton\ =\ savedFilter\ \?\ document\.querySelector\(\.filter-btn\[data-filter=""]\)\ :\ document\.querySelector\('\.filter-btn\[data-filter="all"]'\);\n\ \ \ \ if\ \(targetButton\)\ \{\n\ \ \ \ \ \ currentFilter\ =\ targetButton\.dataset\.filter;\n\ \ \ \ \ \ setFilterButtonStates\(targetButton\);\n\ \ \ \ }\n\ \ }\ catch\ \(_\)\ \{}\n\n\ \ updateVisibleCards\(\);\n\n\ \ //\ Filter\ click\ handling\n\ \ filterControls\?\.addEventListener\('click',\ \(event\)\ =>\ \{\n\ \ \ \ const\ targetButton\ =\ event\.target\.closest\('button'\);\n\ \ \ \ if\ \(!targetButton\)\ return;\n\ \ \ \ currentFilter\ =\ targetButton\.dataset\.filter;\n\ \ \ \ setFilterButtonStates\(targetButton\);\n\ \ \ \ try\ \{\ localStorage\.setItem\('pd_currentFilter',\ currentFilter\);\ }\ catch\ \(_\)\ \{}\n\ \ \ \ updateVisibleCards\(\);\n\ \ }\);\n\n\ \ //\ Search\ input\ handling\n\ \ searchInput\?\.addEventListener\('input',\ \(\)\ =>\ \{\n\ \ \ \ try\ \{\ localStorage\.setItem\('pd_search',\ searchInput\.value\);\ }\ catch\ \(_\)\ \{}\n\ \ \ \ updateVisibleCards\(\);\n\ \ }\);\n}\);\n</script>
+    <script>
+// Consolidated filtering/search, accessibility, persistence, and results count
+document.addEventListener('DOMContentLoaded', () => {
+  const filterControls = document.getElementById('filter-controls');
+  const drillCards = document.querySelectorAll('.drill-card');
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const searchInput = document.getElementById('search-input');
+  const resultsCount = document.getElementById('results-count');
+
+  let currentFilter = 'all';
+
+  function setFilterButtonStates(activeButton) {
+    filterButtons.forEach(button => {
+      const isActive = button === activeButton;
+      button.classList.toggle('active', isActive);
+      button.classList.toggle('bg-blue-600', isActive);
+      button.classList.toggle('text-white', isActive);
+      button.classList.toggle('bg-white', !isActive);
+      button.classList.toggle('text-slate-700', !isActive);
+      button.classList.toggle('hover:bg-slate-100', !isActive);
+      button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+  }
+
+  function updateVisibleCards() {
+    const searchTerm = (searchInput?.value || '').toLowerCase();
+    let visible = 0;
+
+    drillCards.forEach(card => {
+      const cardTopic = card.dataset.topic;
+      const cardTitle = card.querySelector('h2')?.textContent.toLowerCase() || '';
+      const cardDescription = card.querySelector('p')?.textContent.toLowerCase() || '';
+
+      const matchesFilter = currentFilter === 'all' || cardTopic === currentFilter;
+      const matchesSearch = cardTitle.includes(searchTerm) || cardDescription.includes(searchTerm);
+
+      if (matchesFilter && matchesSearch) {
+        card.classList.remove('hidden');
+        visible++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    if (resultsCount) {
+      resultsCount.textContent = ${visible}  shown;
+    }
+  }
+
+  // Restore saved state first
+  try {
+    const savedFilter = localStorage.getItem('pd_currentFilter');
+    const savedSearch = localStorage.getItem('pd_search');
+    if (savedSearch && searchInput) searchInput.value = savedSearch;
+    const targetButton = savedFilter
+      ? document.querySelector(.filter-btn[data-filter=""])
+      : document.querySelector(.filter-btn[data-filter="all"]);
+    if (targetButton) {
+      currentFilter = targetButton.dataset.filter;
+      setFilterButtonStates(targetButton);
+    }
+  } catch (_) {}
+
+  updateVisibleCards();
+
+  // Filter click handling
+  filterControls?.addEventListener('click', (event) => {
+    const targetButton = event.target.closest('button');
+    if (!targetButton) return;
+    currentFilter = targetButton.dataset.filter;
+    setFilterButtonStates(targetButton);
+    try { localStorage.setItem('pd_currentFilter', currentFilter); } catch (_) {}
+    updateVisibleCards();
+  });
+
+  // Search input handling
+  searchInput?.addEventListener('input', () => {
+    try { localStorage.setItem('pd_search', searchInput.value); } catch (_) {}
+    updateVisibleCards();
+  });
+});
+</script>
 </body>
 </html>
+
 
 
 
