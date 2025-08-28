@@ -500,5 +500,77 @@
             });
         });
     </script>
+    
+    <!-- pd-enhancements: UX/accessibility/persistence -->
+    <script>
+        // Accessibility, persistence, results count, and animation fixes
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inject CSS override so Tailwind's .hidden doesn't cancel transitions on cards
+            const style = document.createElement('style');
+            style.textContent = `.drill-card.hidden{display:block !important;}`;
+            document.head.appendChild(style);
+
+            const filterControls = document.getElementById('filter-controls');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const searchInput = document.getElementById('search-input');
+
+            // Insert a live results counter after the filter controls
+            const resultsCount = document.createElement('p');
+            resultsCount.id = 'results-count';
+            resultsCount.setAttribute('role', 'status');
+            resultsCount.setAttribute('aria-live', 'polite');
+            resultsCount.className = 'mt-4 text-sm text-slate-600 text-center';
+            if (filterControls) {
+                filterControls.insertAdjacentElement('afterend', resultsCount);
+            }
+
+            function updateResults() {
+                const visible = document.querySelectorAll('.drill-card:not(.hidden)').length;
+                if (resultsCount) {
+                    resultsCount.textContent = `${visible} ${visible === 1 ? 'drill' : 'drills'} shown`;
+                }
+            }
+
+            function setFilterAria() {
+                const active = document.querySelector('.filter-btn.active');
+                filterButtons.forEach(btn => {
+                    btn.setAttribute('aria-pressed', btn === active ? 'true' : 'false');
+                });
+            }
+
+            // Restore saved state
+            try {
+                const savedFilter = localStorage.getItem('pd_currentFilter');
+                const savedSearch = localStorage.getItem('pd_search');
+                if (savedSearch && searchInput) searchInput.value = savedSearch;
+                if (savedFilter) {
+                    const btn = document.querySelector(`.filter-btn[data-filter="${savedFilter}"]`);
+                    if (btn instanceof HTMLElement) btn.click();
+                }
+            } catch (_) { /* ignore storage errors */ }
+
+            // Persist and reflect state on interactions (runs after original handlers)
+            filterControls?.addEventListener('click', () => {
+                const active = document.querySelector('.filter-btn.active');
+                if (active) {
+                    try { localStorage.setItem('pd_currentFilter', active.getAttribute('data-filter') || 'all'); } catch (_) {}
+                }
+                setFilterAria();
+                updateResults();
+            });
+
+            searchInput?.addEventListener('input', () => {
+                try { localStorage.setItem('pd_search', searchInput.value); } catch (_) {}
+                updateResults();
+            });
+
+            // Initialize aria state and results after original script runs
+            setTimeout(() => {
+                setFilterAria();
+                updateResults();
+            }, 0);
+        });
+    </script>
 </body>
 </html>
+
