@@ -1,8 +1,8 @@
 # Portuguese Grammar Drills
 
-A simple, static site of focused practice drills for Brazilian Portuguese. Filter by topic, search by keyword, and launch a drill to practice.
+A simple, static site of focused practice drills for Portuguese. Filter by topic, search by keyword, and launch a drill to practice.
 
-- Live site: https://kleinster2.github.io/portuguese-drills/
+Designed to be dialect-neutral (PT-PT and PT-BR).\r\n\r\n- Live site: https://kleinster2.github.io/portuguese-drills/
 - Tech: plain HTML + Tailwind CDN + a small script (no build step)
 
 ## Features
@@ -22,4 +22,5 @@ A simple, static site of focused practice drills for Brazilian Portuguese. Filte
 ## Contributing
 - Open an issue with suggestions or a pull request with focused changes.
 - For larger changes, consider discussing first in an issue.
+
 
