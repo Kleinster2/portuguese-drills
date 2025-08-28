@@ -19,6 +19,7 @@
             transition: opacity 0.5s ease-out, transform 0.3s ease;
         }
         .drill-card.hidden {
+                        display: block !important;
             /* Use a different technique for hiding to allow for transitions */
             opacity: 0;
             transform: scale(0.95);
@@ -76,6 +77,7 @@
                     <button data-filter="pronunciation" class="filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Pronunciation</button>
                     <button data-filter="conversation" class="filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Conversational Skills</button>
                 </div>
+                    <p id="results-count" role="status" aria-live="polite" class="mt-4 text-sm text-slate-600 text-center"></p>
             </div>
 
             <!-- Drill Cards Grid -->
@@ -506,23 +508,12 @@
         // Accessibility, persistence, results count, and animation fixes
         document.addEventListener('DOMContentLoaded', () => {
             // Inject CSS override so Tailwind's .hidden doesn't cancel transitions on cards
-            const style = document.createElement('style');
-            style.textContent = `.drill-card.hidden{display:block !important;}`;
-            document.head.appendChild(style);
 
             const filterControls = document.getElementById('filter-controls');
             const filterButtons = document.querySelectorAll('.filter-btn');
             const searchInput = document.getElementById('search-input');
 
-            // Insert a live results counter after the filter controls
-            const resultsCount = document.createElement('p');
-            resultsCount.id = 'results-count';
-            resultsCount.setAttribute('role', 'status');
-            resultsCount.setAttribute('aria-live', 'polite');
-            resultsCount.className = 'mt-4 text-sm text-slate-600 text-center';
-            if (filterControls) {
-                filterControls.insertAdjacentElement('afterend', resultsCount);
-            }
+                        const resultsCount = document.getElementById("results-count");
 
             function updateResults() {
                 const visible = document.querySelectorAll('.drill-card:not(.hidden)').length;
@@ -573,4 +564,5 @@
     </script>
 </body>
 </html>
+
 
