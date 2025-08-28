@@ -24,3 +24,7 @@ Designed to be dialect-neutral (PT-PT and PT-BR).\r\n\r\n- Live site: https://kl
 - For larger changes, consider discussing first in an issue.
 
 
+
+## Dialects
+Drills default to Brazilian Portuguese. You can ask any tutor to respond in European Portuguese.
+
