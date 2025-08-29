@@ -28,17 +28,15 @@
             opacity: 1;
             transition: opacity 0.5s ease-out, transform 0.3s ease;
         }
-        .drill-card.hidden {
-                        display: block !important;
-            /* Use a different technique for hiding to allow for transitions */
+        /* Animate-out state without removing from flow */
+        .drill-card.is-hiding {
             opacity: 0;
             transform: scale(0.95);
-            height: 0;
-            padding: 0;
-            margin: 0;
-            overflow: hidden;
-            visibility: hidden;
-            transition: opacity 0.3s ease, transform 0.3s ease, height 0.3s ease, visibility 0s 0.3s;
+            pointer-events: none;
+        }
+        /* Fully hidden: remove from layout so the grid packs without gaps */
+        .drill-card.hidden {
+            display: none !important;
         }
     </style>
     <!-- 
@@ -90,7 +88,7 @@
             </div>
 
             <!-- Drill Cards Grid -->
-            <div id="drill-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div id="drill-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 grid-flow-row-dense">
 
                 <!-- Card: -ar Verbs -->
                 <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs">
@@ -484,6 +482,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchTerm = (searchInput?.value || '').toLowerCase();
     let visible = 0;
 
+    const hideWithAnimation = (card) => {
+      if (!card.classList.contains('hidden')) {
+        card.classList.add('is-hiding');
+        // Match CSS transition (~300ms). After it completes, remove from layout.
+        setTimeout(() => {
+          card.classList.add('hidden');
+          card.classList.remove('is-hiding');
+        }, 300);
+      }
+    };
+
+    const showWithAnimation = (card) => {
+      if (card.classList.contains('hidden')) {
+        card.classList.remove('hidden');
+        // Start from hiding state then animate to visible
+        card.classList.add('is-hiding');
+        requestAnimationFrame(() => {
+          card.classList.remove('is-hiding');
+        });
+      } else {
+        card.classList.remove('is-hiding');
+      }
+    };
+
     drillCards.forEach(card => {
       const cardTopic = card.dataset.topic;
       const cardTitle = card.querySelector('h2')?.textContent.toLowerCase() || '';
@@ -493,15 +515,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const matchesSearch = cardTitle.includes(searchTerm) || cardDescription.includes(searchTerm);
 
       if (matchesFilter && matchesSearch) {
-        card.classList.remove('hidden');
+        showWithAnimation(card);
         visible++;
       } else {
-        card.classList.add('hidden');
+        hideWithAnimation(card);
       }
     });
 
     if (resultsCount) {
-      resultsCount.textContent = ${visible}  shown;
+      resultsCount.textContent = `${visible} ${visible === 1 ? 'drill' : 'drills'} shown`;
     }
   }
 
@@ -511,8 +533,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedSearch = localStorage.getItem('pd_search');
     if (savedSearch && searchInput) searchInput.value = savedSearch;
     const targetButton = savedFilter
-      ? document.querySelector(.filter-btn[data-filter=""])
-      : document.querySelector(.filter-btn[data-filter="all"]);
+      ? document.querySelector(`.filter-btn[data-filter="${savedFilter}"]`)
+      : document.querySelector(`.filter-btn[data-filter="all"]`);
     if (targetButton) {
       currentFilter = targetButton.dataset.filter;
       setFilterButtonStates(targetButton);
