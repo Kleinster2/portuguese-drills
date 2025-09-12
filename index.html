@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portuguese Grammar Drills</title>
+    <title>Portuguese Grammar Drills by Gilberto Klein</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,19 +16,31 @@
         .drill-card {
             visibility: visible;
             opacity: 1;
-            transition: opacity 0.5s ease-out, transform 0.3s ease;
+            transition: opacity 0.3s ease-out, transform 0.3s ease-in-out;
         }
         .drill-card.hidden {
             visibility: hidden;
             opacity: 0;
+            position: absolute; /* Take it out of the flow to prevent empty space */
+            transform: scale(0.95);
+        }
+        /* Style for visually hidden labels for accessibility */
+        .sr-only {
             position: absolute;
-            transform: scale(0.9);
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
         }
     </style>
     <!-- 
         Chosen Palette: Warm Neutrals & Calming Blue 
         Application Structure Plan: A responsive card-based grid layout presenting each GPT drill as a distinct, interactive element. 
-        The structure is organized purely by topic to allow for user-driven exploration. 
+        The structure is organized by topic and then CEFR level to allow for user-driven exploration. 
         Interactive filters allow users to focus on a specific topic.
         Visualization & Content Choices: The primary content is a list of learning tools. Goal: Inform & Navigate. 
         Presentation: Interactive cards, each containing a title, description, and a single topic badge. 
@@ -37,38 +49,54 @@
         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
     -->
 </head>
-<body class="bg-slate-50 text-slate-800">
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
 
-    <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+    <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 flex-grow">
         
+        <!-- Header Section -->
         <header class="text-center mb-12">
-            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900">Portuguese Grammar Drills</h1>
-            <p class="mt-4 max-w-2xl mx-auto text-lg text-slate-600">
-                Welcome! Here you will find a series of focused practice drills to help you test key concepts in Portuguese. Click on any tutor to start practicing.
-            </p>
+            <div class="py-10 px-4 bg-gradient-to-br from-white to-slate-100 rounded-3xl shadow-sm">
+                <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900">Portuguese Grammar Drills</h1>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">
+                    Bem-vindo! Here you will find a series of focused practice drills to help you test key concepts in Portuguese. Click on any drill to start practicing.
+                </p>
+            </div>
         </header>
 
         <main>
             <!-- Search Bar -->
             <div class="mb-8 max-w-md mx-auto">
-                <input type="text" id="search-input" placeholder="Search for a drill..." class="w-full px-4 py-3 text-lg text-slate-700 bg-white border border-slate-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                <!-- Added a visually hidden label for better accessibility -->
+                <label for="search-input" class="sr-only">Search for a drill</label>
+                <input type="text" id="search-input" placeholder="Search for a drill..." class="w-full px-5 py-3 text-lg text-slate-700 bg-white border border-slate-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
             </div>
 
-            <!-- Filter Controls -->
-            <div id="filter-controls" class="flex justify-center items-center gap-2 sm:gap-4 mb-12 flex-wrap">
-                <button data-filter="all" class="filter-btn active bg-blue-600 text-white rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">All Drills</button>
-                <button data-filter="verbs" class="filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Core Verbs</button>
-                <button data-filter="tenses" class="filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Tenses & Structures</button>
-                <button data-filter="grammar" class="filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Grammar & Prepositions</button>
-                <button data-filter="pronunciation" class="filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Pronunciation</button>
-                <button data-filter="conversation" class="filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Conversational Skills</button>
+            <!-- Topic Filter Controls -->
+            <div id="topic-filter-controls" class="flex justify-center items-center gap-x-2 sm:gap-x-3 gap-y-2 mb-4 flex-wrap">
+                 <span class="font-semibold text-slate-600">Topic:</span>
+                 <button data-filter="all" class="topic-filter-btn active bg-blue-600 text-white rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" aria-pressed="true">All</button>
+                 <button data-filter="verbs" class="topic-filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" aria-pressed="false">Core Verbs</button>
+                 <button data-filter="tenses" class="topic-filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" aria-pressed="false">Tenses & Structures</button>
+                 <button data-filter="grammar" class="topic-filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" aria-pressed="false">Grammar & Prepositions</button>
+                 <button data-filter="pronunciation" class="topic-filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" aria-pressed="false">Pronunciation</button>
+                 <button data-filter="conversation" class="topic-filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" aria-pressed="false">Conversational Skills</button>
+            </div>
+
+            <!-- CEFR Level Filter Controls -->
+            <div id="cefr-filter-controls" class="flex justify-center items-center gap-x-2 sm:gap-x-3 gap-y-2 mb-12 flex-wrap">
+                 <span class="font-semibold text-slate-600">CEFR Level:</span>
+                 <button data-filter="all" class="cefr-filter-btn active bg-indigo-600 text-white rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-pressed="true">All</button>
+                 <button data-filter="a1" class="cefr-filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-pressed="false">A1</button>
+                 <button data-filter="a2" class="cefr-filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-pressed="false">A2</button>
+                 <button data-filter="b1" class="cefr-filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-pressed="false">B1</button>
+                 <button data-filter="b2" class="cefr-filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-pressed="false">B2</button>
             </div>
 
             <!-- Drill Cards Grid -->
-            <div id="drill-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
+            <div id="drill-grid" class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
                 <!-- Card: -ar Verbs -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">📚 Regular `-ar` Verb Drill</h2>
@@ -80,7 +108,7 @@
                 </div>
 
                 <!-- Card: -er Verbs -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">📚 Regular `-er` Verb Drill</h2>
@@ -92,7 +120,7 @@
                 </div>
 
                 <!-- Card: -ir Verbs -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">📚 Regular `-ir` Verb Drill</h2>
@@ -104,7 +132,7 @@
                 </div>
                 
                 <!-- Card: Irregular Verbs -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1">
                      <div class="p-6 flex-grow">
                         <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">📚 Irregular Verb Drill</h2>
@@ -116,7 +144,7 @@
                 </div>
                 
                 <!-- Card: Reflexive Verbs -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a2">
                      <div class="p-6 flex-grow">
                         <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">📚 Reflexive Verbs Drill</h2>
@@ -128,7 +156,7 @@
                 </div>
 
                 <!-- Card: Immediate Future -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="a1">
                      <div class="p-6 flex-grow">
                         <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Immediate Future Drill</h2>
@@ -140,7 +168,7 @@
                 </div>
                 
                 <!-- Card: Present Continuous -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="a2">
                      <div class="p-6 flex-grow">
                         <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Present Continuous Tense</h2>
@@ -152,7 +180,7 @@
                 </div>
 
                 <!-- Card: Imperfect Tense -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Imperfect Tense Drill</h2>
@@ -164,7 +192,7 @@
                 </div>
 
                 <!-- Card: Future Tense -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Future Tense Drill</h2>
@@ -176,7 +204,7 @@
                 </div>
 
                 <!-- Card: Conditional Tense -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Conditional Tense Drill</h2>
@@ -188,7 +216,7 @@
                 </div>
                 
                 <!-- Card: Present Subjunctive -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Present Subjunctive Drill</h2>
@@ -200,7 +228,7 @@
                 </div>
                 
                 <!-- Card: Imperfect Subjunctive -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b2">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Imperfect Subjunctive Drill</h2>
@@ -212,7 +240,7 @@
                 </div>
 
                 <!-- Card: Future Subjunctive -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b2">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Future Subjunctive Drill</h2>
@@ -224,7 +252,7 @@
                 </div>
 
                 <!-- Card: Imperative Tense -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Imperative Drill</h2>
@@ -236,7 +264,7 @@
                 </div>
                 
                 <!-- Card: Noun Plural Tutor -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Noun Plural Tutor</h2>
@@ -248,7 +276,7 @@
                 </div>
 
                 <!-- Card: Adjective Gender & Number Agreement -->
-                 <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
+                 <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Adjective Gender & Number Agreement</h2>
@@ -260,7 +288,7 @@
                 </div>
                 
                 <!-- Card: Demonstrative Pronouns Drill -->
-                 <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
+                 <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="b1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Demonstrative Pronouns Drill</h2>
@@ -272,7 +300,7 @@
                 </div>
 
                 <!-- Card: 'Ir' + Transportation -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 'Ir' + Transportation Drill</h2>
@@ -284,7 +312,7 @@
                 </div>
 
                 <!-- Card: Advanced Demonstratives -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="b2">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Advanced Demonstratives</h2>
@@ -296,7 +324,7 @@
                 </div>
 
                 <!-- Card: Crase -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="b1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Crase (`à`) Tutor</h2>
@@ -308,7 +336,7 @@
                 </div>
 
                 <!-- Card: Contractions (de + pronoun) -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a2">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Contraction Trainer (`dele`/`dela`)</h2>
@@ -320,7 +348,7 @@
                 </div>
                 
                 <!-- Card: Contractions (em + pronoun) -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a2">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Contraction Trainer (`nele`/`nela`)</h2>
@@ -332,7 +360,7 @@
                 </div>
 
                 <!-- Card: Contractions (de/em + articles) -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a2">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Contractions with Articles (de/em)</h2>
@@ -344,7 +372,7 @@
                 </div>
                 
                 <!-- Card: Syllable Stress -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="pronunciation">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="pronunciation" data-cefr="b1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Pronunciation</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">🔊 Syllable Stress Drill</h2>
@@ -356,7 +384,7 @@
                 </div>
 
                 <!-- Card: Phonetic Tutor -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="pronunciation">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="pronunciation" data-cefr="b2">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Pronunciation</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">🔊 PT-BR Phonetic Tutor</h2>
@@ -368,7 +396,7 @@
                 </div>
                 
                 <!-- Card: Colloquial Speech -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="b2">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">💬 Colloquial Speech Drill</h2>
@@ -380,7 +408,7 @@
                 </div>
 
                  <!-- Card: Conversational Answers -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="a2">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">💬 Conversational Answers Drill</h2>
@@ -392,7 +420,7 @@
                 </div>
 
                 <!-- Card: Self-Introduction -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="a1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">💬 Self-Introduction Drill</h2>
@@ -404,7 +432,7 @@
                 </div>
                 
                 <!-- Card: Portuguese for Spanish Speakers -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="b1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">💬 Portuguese for Spanish Speakers</h2>
@@ -416,69 +444,101 @@
                 </div>
 
                 <!-- Card: Grammar for Spanish Speakers -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation">
+                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="b1">
                     <div class="p-6 flex-grow">
                         <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span>
                         <h2 class="text-xl font-bold text-slate-900 mb-2">💬 Grammar for Spanish Speakers</h2>
                         <p class="text-slate-600 text-base flex-grow">A focused drill on the key grammatical differences between Spanish and Portuguese, like contractions and pronoun placement.</p>
                     </div>
                     <div class="p-6 bg-slate-50">
-                        <a href="#" target="_blank" class="block w-full text-center bg-teal-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-teal-700 transition-colors">Start Drill</a>
+                        <!-- NOTE: This link was '#' in the original. Update when the drill is ready. -->
+                        <a href="#" target="_blank" class="block w-full text-center bg-gray-400 text-white rounded-lg px-4 py-2.5 font-semibold cursor-not-allowed" aria-disabled="true">Coming Soon</a>
                     </div>
+                </div>
+
+                 <!-- Added a "No results" message for better user feedback -->
+                <div id="no-results" class="hidden col-span-1 md:col-span-2 lg:col-span-3 text-center py-16">
+                    <h3 class="text-2xl font-semibold text-slate-600">Nenhum resultado</h3>
+                    <p class="text-slate-500 mt-2">No drills matched your search. Try removing some filters or changing your search term.</p>
                 </div>
 
             </div>
         </main>
     </div>
 
+    <!-- Added a simple footer to make the page feel more complete -->
+    <footer class="bg-slate-100 border-t border-slate-200">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-center text-slate-500">
+            <p>&copy; 2025 Gil Klein. All Rights Reserved.</p>
+            <p class="text-sm mt-1">Made with ❤️ in New York City.</p>
+        </div>
+    </footer>
+
+
     <script>
-        // This script handles the filtering and search logic for the drill cards.
         document.addEventListener('DOMContentLoaded', () => {
-            const filterControls = document.getElementById('filter-controls');
+            const cefrFilterControls = document.getElementById('cefr-filter-controls');
+            const topicFilterControls = document.getElementById('topic-filter-controls');
             const drillCards = document.querySelectorAll('.drill-card');
-            const filterButtons = document.querySelectorAll('.filter-btn');
             const searchInput = document.getElementById('search-input');
+            const noResultsMessage = document.getElementById('no-results');
 
             function filterAndSearch() {
-                const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
-                const searchTerm = searchInput.value.toLowerCase();
+                const activeCefrFilter = cefrFilterControls.querySelector('.active').dataset.filter;
+                const activeTopicFilter = topicFilterControls.querySelector('.active').dataset.filter;
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                let visibleCount = 0;
 
                 drillCards.forEach(card => {
+                    const cardCefr = card.dataset.cefr;
                     const cardTopic = card.dataset.topic;
                     const cardTitle = card.querySelector('h2').textContent.toLowerCase();
                     const cardDescription = card.querySelector('p').textContent.toLowerCase();
 
-                    const matchesFilter = activeFilter === 'all' || cardTopic === activeFilter;
+                    const matchesCefr = activeCefrFilter === 'all' || cardCefr === activeCefrFilter;
+                    const matchesTopic = activeTopicFilter === 'all' || cardTopic === activeTopicFilter;
                     const matchesSearch = cardTitle.includes(searchTerm) || cardDescription.includes(searchTerm);
 
-                    if (matchesFilter && matchesSearch) {
+                    if (matchesCefr && matchesTopic && matchesSearch) {
                         card.classList.remove('hidden');
+                        visibleCount++;
                     } else {
                         card.classList.add('hidden');
                     }
                 });
+
+                noResultsMessage.classList.toggle('hidden', visibleCount > 0);
             }
 
-            // Listen for clicks on the filter button container.
-            filterControls.addEventListener('click', (event) => {
-                const targetButton = event.target.closest('button');
-                if (!targetButton) return; // Ignore clicks that aren't on a button.
-
-                // Update the active state of the filter buttons.
-                filterButtons.forEach(button => {
-                    button.classList.toggle('active', button === targetButton);
-                    button.classList.toggle('bg-blue-600', button === targetButton);
-                    button.classList.toggle('text-white', button === targetButton);
-                    button.classList.toggle('bg-white', button !== targetButton);
-                    button.classList.toggle('text-slate-700', button !== targetButton);
-                    button.classList.toggle('hover:bg-slate-100', button !== targetButton);
-                });
+            function setupFilter(controlsId, buttonClass, activeBgColor) {
+                const controls = document.getElementById(controlsId);
+                const buttons = controls.querySelectorAll(`.${buttonClass}`);
                 
-                filterAndSearch();
-            });
+                controls.addEventListener('click', (event) => {
+                    const targetButton = event.target.closest(`.${buttonClass}`);
+                    if (!targetButton) return;
 
-            // Listen for input in the search bar.
+                    buttons.forEach(button => {
+                        const isActive = button === targetButton;
+                        button.classList.toggle('active', isActive);
+                        button.classList.toggle(activeBgColor, isActive);
+                        button.classList.toggle('text-white', isActive);
+                        button.classList.toggle('bg-white', !isActive);
+                        button.classList.toggle('text-slate-700', !isActive);
+                        button.setAttribute('aria-pressed', isActive);
+                    });
+                    
+                    filterAndSearch();
+                });
+            }
+
+            setupFilter('cefr-filter-controls', 'cefr-filter-btn', 'bg-indigo-600');
+            setupFilter('topic-filter-controls', 'topic-filter-btn', 'bg-blue-600');
+
             searchInput.addEventListener('input', filterAndSearch);
+            
+            // Initial filter on load
+            filterAndSearch();
         });
     </script>
 </body>
