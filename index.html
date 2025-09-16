@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portuguese Grammar Drills</title>
+    <title>Portuguese Grammar Drills by Gilberto Klein</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,7 @@
         .drill-card {
             visibility: visible;
             opacity: 1;
-            transition: opacity 0.3s ease-out, transform 0.3s ease-in-out;
+            transition: opacity 0.3s ease-out, transform 0.3s ease-in-out, box-shadow 0.3s ease;
         }
         .drill-card.hidden {
             visibility: hidden;
@@ -24,7 +24,6 @@
             position: absolute; /* Take it out of the flow to prevent empty space */
             transform: scale(0.95);
         }
-        /* Style for visually hidden labels for accessibility */
         .sr-only {
             position: absolute;
             width: 1px;
@@ -36,37 +35,109 @@
             white-space: nowrap;
             border-width: 0;
         }
+        .drill-card.highlight {
+            box-shadow: 0 0 0 3px #3b82f6; /* blue-500 */
+            transform: translateY(-4px) scale(1.02);
+        }
+        /* Styles for the dynamically displayed learning path */
+        #path-display-container .learning-path {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .learning-path ol {
+            position: relative;
+            padding-left: 2rem;
+            list-style: none;
+        }
+        .learning-path ol::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0.25rem;
+            bottom: 0.25rem;
+            width: 2px;
+            background-color: #cbd5e1; /* slate-300 */
+        }
+        .learning-path li {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .learning-path li:last-child {
+            margin-bottom: 0;
+        }
+        .learning-path li::before {
+            content: '';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.4rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 9999px;
+            background-color: #fff;
+            border: 3px solid #6366f1; /* indigo-600 */
+        }
     </style>
-    <!-- 
-        Chosen Palette: Warm Neutrals & Calming Blue 
-        Application Structure Plan: A responsive card-based grid layout presenting each GPT drill as a distinct, interactive element. 
-        The structure is organized by topic and then CEFR level to allow for user-driven exploration. 
-        Interactive filters allow users to focus on a specific topic.
-        Visualization & Content Choices: The primary content is a list of learning tools. Goal: Inform & Navigate. 
-        Presentation: Interactive cards, each containing a title, description, and a single topic badge. 
-        Interaction: Topic filter buttons use JS to dynamically show/hide cards. Card buttons link to drills. 
-        Unicode icons (📚, 💡, 🔗, 🔊, 💬) add visual interest. No SVG/Mermaid used.
-        CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
-    -->
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
 
     <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 flex-grow">
         
-        <!-- Header Section -->
         <header class="text-center mb-12">
             <div class="py-10 px-4 bg-gradient-to-br from-white to-slate-100 rounded-3xl shadow-sm">
                 <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900">Portuguese Grammar Drills</h1>
                 <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">
-                    Bem-vindo! Here you will find a series of focused practice drills to help you test key concepts in Portuguese. Click on any drill to start practicing.
+                    Bem-vindo! Select a learning path or use the filters below to find a specific drill.
                 </p>
             </div>
         </header>
 
+        <!-- Hidden templates for the learning paths -->
+        <div id="path-templates" class="hidden">
+            <div id="a1-path" class="learning-path bg-white p-6 rounded-2xl shadow-lg">
+                <h3 class="text-2xl font-bold text-indigo-600 mb-6 border-b-2 border-indigo-200 pb-3">A1 Path</h3>
+                <ol>
+                    <li><h4 class="font-semibold text-slate-700 mb-2">Introduction</h4><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-self-introduction">Self-Introduction Drill</a></li>
+                    <li><h4 class="font-semibold text-slate-700 mb-2">Regular Verbs</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-ar-verbs">Regular -ar Verbs</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-er-verbs">Regular -er Verbs</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-ir-verbs">Regular -ir Verbs</a></li></ul></li>
+                    <li><h4 class="font-semibold text-slate-700 mb-2">Core Concepts</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-irregular-verbs">Irregular Verbs</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-immediate-future">Immediate Future</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-noun-plurals">Noun Plurals</a></li></ul></li>
+                </ol>
+            </div>
+            <div id="a2-path" class="learning-path bg-white p-6 rounded-2xl shadow-lg">
+                <h3 class="text-2xl font-bold text-indigo-600 mb-6 border-b-2 border-indigo-200 pb-3">A2 Path</h3>
+                <ol>
+                    <li><h4 class="font-semibold text-slate-700 mb-2">Expanding Verbs</h4><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-reflexive-verbs">Reflexive Verbs</a></li>
+                    <li><h4 class="font-semibold text-slate-700 mb-2">Contractions</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-contractions-de">Contractions (de +)</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-contractions-em">Contractions (em +)</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-contractions-articles">Contractions (Articles)</a></li></ul></li>
+                    <li><h4 class="font-semibold text-slate-700 mb-2">Present Actions</h4><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-present-continuous">Present Continuous</a></li>
+                </ol>
+            </div>
+            <div id="b1-path" class="learning-path bg-white p-6 rounded-2xl shadow-lg">
+                <h3 class="text-2xl font-bold text-indigo-600 mb-6 border-b-2 border-indigo-200 pb-3">B1 Path</h3>
+                <ol>
+                    <li><h4 class="font-semibold text-slate-700 mb-2">Past & Future Tenses</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-imperfect-tense">Imperfect Tense</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-future-tense">Future Tense</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-conditional-tense">Conditional Tense</a></li></ul></li>
+                    <li><h4 class="font-semibold text-slate-700 mb-2">Key Grammar</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-crase">Crase (à) Tutor</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-demonstratives">Demonstratives</a></li></ul></li>
+                    <li><h4 class="font-semibold text-slate-700 mb-2">The Subjunctive</h4><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-present-subjunctive">Present Subjunctive</a></li>
+                </ol>
+            </div>
+            <div id="b2-path" class="learning-path bg-white p-6 rounded-2xl shadow-lg">
+                <h3 class="text-2xl font-bold text-indigo-600 mb-6 border-b-2 border-indigo-200 pb-3">B2 Path</h3>
+                <ol>
+                    <li><h4 class="font-semibold text-slate-700 mb-2">Advanced Subjunctive</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-imperfect-subjunctive">Imperfect Subjunctive</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-future-subjunctive">Future Subjunctive</a></li></ul></li>
+                    <li><h4 class="font-semibold text-slate-700 mb-2">Advanced Grammar</h4><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-advanced-demonstratives">Adv. Demonstratives</a></li>
+                    <li><h4 class="font-semibold text-slate-700 mb-2">Sounding Natural</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-colloquial-speech">Colloquial Speech</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-phonetic-tutor">Phonetic Tutor</a></li></ul></li>
+                </ol>
+            </div>
+        </div>
+
         <main>
+            <h2 class="text-3xl font-bold text-center text-slate-800 mb-8 pt-8 border-t border-slate-200">Drill Explorer</h2>
             <!-- Search Bar -->
             <div class="mb-8 max-w-md mx-auto">
-                <!-- Added a visually hidden label for better accessibility -->
                 <label for="search-input" class="sr-only">Search for a drill</label>
                 <input type="text" id="search-input" placeholder="Search for a drill..." class="w-full px-5 py-3 text-lg text-slate-700 bg-white border border-slate-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
             </div>
@@ -83,7 +154,7 @@
             </div>
 
             <!-- CEFR Level Filter Controls -->
-            <div id="cefr-filter-controls" class="flex justify-center items-center gap-x-2 sm:gap-x-3 gap-y-2 mb-12 flex-wrap">
+            <div id="cefr-filter-controls" class="flex justify-center items-center gap-x-2 sm:gap-x-3 gap-y-2 mb-6 flex-wrap">
                  <span class="font-semibold text-slate-600">CEFR Level:</span>
                  <button data-filter="all" class="cefr-filter-btn active bg-indigo-600 text-white rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-pressed="true">All</button>
                  <button data-filter="a1" class="cefr-filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-pressed="false">A1</button>
@@ -92,381 +163,59 @@
                  <button data-filter="b2" class="cefr-filter-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" aria-pressed="false">B2</button>
             </div>
 
+            <!-- Container for Path buttons and the dynamic display area -->
+            <section id="learning-paths-section" class="mb-12">
+                <!-- The buttons that trigger the paths -->
+                <div id="path-triggers" class="flex justify-center items-center gap-x-2 sm:gap-x-3 gap-y-2 mb-6 flex-wrap">
+                    <span class="font-semibold text-slate-600">Learning Paths:</span>
+                    <button data-path-id="a1-path" class="path-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">A1 Path</button>
+                    <button data-path-id="a2-path" class="path-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">A2 Path</button>
+                    <button data-path-id="b1-path" class="path-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">B1 Path</button>
+                    <button data-path-id="b2-path" class="path-btn bg-white text-slate-700 hover:bg-slate-100 rounded-full px-4 py-2 text-sm sm:text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">B2 Path</button>
+                </div>
+                
+                <!-- This container will be populated by JavaScript when a button is clicked -->
+                <div id="path-display-container" class="min-h-[1rem]"></div>
+            </section>
+
             <!-- Drill Cards Grid -->
             <div id="drill-grid" class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <!-- Card: -ar Verbs -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">📚 Regular `-ar` Verb Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Practice the present and simple past of `-ar` verbs.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c11437be1881918610dff3e74a6301-regular-ar-verb-tutor" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: -er Verbs -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">📚 Regular `-er` Verb Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master the second regular verb conjugation.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c1175a9b3c8191a0d9f534de01a2d7-regular-er-verb-tutor" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: -ir Verbs -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">📚 Regular `-ir` Verb Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Complete your knowledge of regular verb endings.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c1183593308191b3992e8d2ef9324e-regular-ir-verb-tutor" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-                
-                <!-- Card: Irregular Verbs -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1">
-                     <div class="p-6 flex-grow">
-                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">📚 Irregular Verb Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Memorize the forms for the most important irregular verbs (ser, estar, ir, ter, etc.).</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c1228bde248191902a423b11197f1f-irregular-verb-drill" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-                
-                <!-- Card: Reflexive Verbs -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a2">
-                     <div class="p-6 flex-grow">
-                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">📚 Reflexive Verbs Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Practice choosing the correct reflexive pronoun (`me`, `se`, `nos`) to match the subject.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c1d82c6f348191a9be65fe79b8a8d7-reflexive-verbs-drill" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Immediate Future -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="a1">
-                     <div class="p-6 flex-grow">
-                        <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Immediate Future Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master the "going to" future (`ir` + infinitive), the most common future form.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c1dabc6b048191a4d4b8d14b022b68-immediate-future-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-                
-                <!-- Card: Present Continuous -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="a2">
-                     <div class="p-6 flex-grow">
-                        <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Present Continuous Tense</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master the Portuguese "-ing" form (`-ndo`) using `estar` + gerund.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c1e0a7746c8191b148791ce4df4f00-present-continuous-tense-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Imperfect Tense -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Imperfect Tense Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Practice the simple form ("used to do"), the past continuous ("was doing"), and the past intent ("was going to do").</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c200e16c108191991fabf5d0f5f790-imperfect-tense-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Future Tense -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Future Tense Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master the Portuguese "will" tense (`-ei`, `-á` endings). Covers regular and key irregular verbs.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c2070450a08191bdf2e55f512949a8-future-tense-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Conditional Tense -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Conditional Tense Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master the Portuguese "would" tense (`-ia` endings). Covers regular and key irregular verbs.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c20fe3ebfc81919b22fb21541b2f7a-conditional-tense-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-                
-                <!-- Card: Present Subjunctive -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Present Subjunctive Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master the subjunctive after triggers like `Espero que...` and `Quero que...`.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c21658b9d08191b9faf99491dee196-present-subjunctive-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-                
-                <!-- Card: Imperfect Subjunctive -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b2">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Imperfect Subjunctive Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master hypothetical "if" clauses (`Se eu fosse...`) for regular and irregular verbs.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c234f932608191a7fe7a1dbca53507-imperfect-subjunctive-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Future Subjunctive -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b2">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Future Subjunctive Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master hypothetical future situations using `Quando...` and `Se...`.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c238f1da2881919e42deb77e1395e1-future-subjunctive-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Imperative Tense -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💡 Imperative Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master the Portuguese command form. Tests the formal (`fale`) and provides notes on the spoken form (`fala`).</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c23bb180b481918200c55455f5c14b-imperative-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-                
-                <!-- Card: Noun Plural Tutor -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Noun Plural Tutor</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master the rules for forming noun plurals, with analogies for Spanish speakers.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68a882666ed08191b9c99f161a0310a8-noun-plural-tutor?model=gpt-5" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Adjective Gender & Number Agreement -->
-                 <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Adjective Gender & Number Agreement</h2>
-                        <p class="text-slate-600 text-base flex-grow">Practice making adjectives match the gender and number of the nouns they describe.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c23e035618819185c3b3a400b58880-adjective-agreement-drill?model=gpt-5" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-                
-                <!-- Card: Demonstrative Pronouns Drill -->
-                 <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="b1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Demonstrative Pronouns Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master the tricky distinction between `este` (near me), `esse` (near you), and `aquele` (over there).</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c251a602148191becd5a26169c727e-demonstratives-drill?model=gpt-5" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: 'Ir' + Transportation -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 'Ir' + Transportation Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Practice using the verb 'ir' (to go) with different modes of transportation like 'de carro', 'a pé', and 'de Uber'.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c253cd531c819193e9f7a6e862b116-ir-transport-tutor" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Advanced Demonstratives -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="b2">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Advanced Demonstratives</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master conversational uses, including discourse proximity and the common 'este' -> 'esse' conflation.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c252ec16648191baf129f287673588-advanced-demonstratives" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Crase -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="b1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Crase (`à`) Tutor</h2>
-                        <p class="text-slate-600 text-base flex-grow">A dedicated drill for mastering the crase. Learn when to use `à` and `às` with instant feedback.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c25b6d0b2c8191b164d08f2d8e1353-crase-drill" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Contractions (de + pronoun) -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a2">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Contraction Trainer (`dele`/`dela`)</h2>
-                        <p class="text-slate-600 text-base flex-grow">Practice possessives (`his book`) and verb objects (`I like him`).</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c30097c5e48191b00d958baf0771a9-dele-dela-deles-delas" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-                
-                <!-- Card: Contractions (em + pronoun) -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a2">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Contraction Trainer (`nele`/`nela`)</h2>
-                        <p class="text-slate-600 text-base flex-grow">Practice location (`in it`) and verb objects (`I think about him`).</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c30b7ff3a48191b69acb4dd4953656-nele-nela-neles-nelas" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Contractions (de/em + articles) -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a2">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Contractions with Articles (de/em)</h2>
-                        <p class="text-slate-600 text-base flex-grow">Learn how “de” and “em” contract with articles using step-by-step fill-in-the-blank drills.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c30c8714b081919c37309e9fdee081-contraction-trainer-de-em" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-                
-                <!-- Card: Syllable Stress -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="pronunciation" data-cefr="b1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Pronunciation</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔊 Syllable Stress Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master Portuguese syllable stress for perfect pronunciation. Learn the rules for stress and accent marks.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c31b6ef1fc8191a815504142eeaa46-syllable-stress-drill" target="_blank" class="block w-full text-center bg-orange-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-orange-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Phonetic Tutor -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="pronunciation" data-cefr="b2">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Pronunciation</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">🔊 PT-BR Phonetic Tutor</h2>
-                        <p class="text-slate-600 text-base flex-grow">Get detailed feedback on your pronunciation. Covers all the sounds of Portuguese.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c3ac2c95e881918061de6ae3fab4f4-phonetic-tutor" target="_blank" class="block w-full text-center bg-orange-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-orange-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-                
-                <!-- Card: Colloquial Speech -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="b2">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💬 Colloquial Speech Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Master the most common reductions and mergers of spoken Portuguese.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c3c587c6fc8191877d9bdac5456510-colloquial-speech-bp" target="_blank" class="block w-full text-center bg-teal-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-teal-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                 <!-- Card: Conversational Answers -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="a2">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💬 Conversational Answers Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">Learn to answer yes/no questions by repeating the verb. Covers simple and emphatic answers.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c3af4d8df8819189cc01a871f1d7e0-yes-no-replies" target="_blank" class="block w-full text-center bg-teal-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-teal-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Self-Introduction -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="a1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💬 Self-Introduction Drill</h2>
-                        <p class="text-slate-600 text-base flex-grow">For absolute beginners. Practice building your first sentences (`Eu sou...`, `Eu moro...`, etc.).</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c3c1e8b54881918e745a7e8e143fb4-self-introduction-drill" target="_blank" class="block w-full text-center bg-teal-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-teal-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-                
-                <!-- Card: Portuguese for Spanish Speakers -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="b1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💬 Portuguese for Spanish Speakers</h2>
-                        <p class="text-slate-600 text-base flex-grow">Leverage your Spanish to learn Portuguese faster. This drill focuses on false friends, pronunciation, and grammar gaps.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <a href="https://chatgpt.com/g/g-68c3c413d418819190babd76e6a9f9e6-portuguese-for-spanish-speakers" target="_blank" class="block w-full text-center bg-teal-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-teal-700 transition-colors">Start Drill</a>
-                    </div>
-                </div>
-
-                <!-- Card: Grammar for Spanish Speakers -->
-                <div class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="b1">
-                    <div class="p-6 flex-grow">
-                        <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span>
-                        <h2 class="text-xl font-bold text-slate-900 mb-2">💬 Grammar for Spanish Speakers</h2>
-                        <p class="text-slate-600 text-base flex-grow">A focused drill on the key grammatical differences between Spanish and Portuguese, like contractions and pronoun placement.</p>
-                    </div>
-                    <div class="p-6 bg-slate-50">
-                        <!-- NOTE: This link was '#' in the original. Update when the drill is ready. -->
-                        <a href="#" target="_blank" class="block w-full text-center bg-gray-400 text-white rounded-lg px-4 py-2.5 font-semibold cursor-not-allowed" aria-disabled="true">Coming Soon</a>
-                    </div>
-                </div>
-
-                 <!-- Added a "No results" message for better user feedback -->
-                <div id="no-results" class="hidden col-span-1 md:col-span-2 lg:col-span-3 text-center py-16">
-                    <h3 class="text-2xl font-semibold text-slate-600">Nenhum resultado</h3>
-                    <p class="text-slate-500 mt-2">No drills matched your search. Try removing some filters or changing your search term.</p>
-                </div>
-
+                <!-- All drill cards from before... -->
+                <div id="drill-ar-verbs" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1"><div class="p-6 flex-grow"><span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span><h2 class="text-xl font-bold text-slate-900 mb-2">📚 Regular `-ar` Verb Drill</h2><p class="text-slate-600 text-base flex-grow">Practice the present and simple past of `-ar` verbs.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c11437be1881918610dff3e74a6301-regular-ar-verb-tutor" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-er-verbs" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1"><div class="p-6 flex-grow"><span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span><h2 class="text-xl font-bold text-slate-900 mb-2">📚 Regular `-er` Verb Drill</h2><p class="text-slate-600 text-base flex-grow">Master the second regular verb conjugation.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c1175a9b3c8191a0d9f534de01a2d7-regular-er-verb-tutor" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-ir-verbs" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1"><div class="p-6 flex-grow"><span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span><h2 class="text-xl font-bold text-slate-900 mb-2">📚 Regular `-ir` Verb Drill</h2><p class="text-slate-600 text-base flex-grow">Complete your knowledge of regular verb endings.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c1183593308191b3992e8d2ef9324e-regular-ir-verb-tutor" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-irregular-verbs" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1"><div class="p-6 flex-grow"><span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span><h2 class="text-xl font-bold text-slate-900 mb-2">📚 Irregular Verb Drill</h2><p class="text-slate-600 text-base flex-grow">Memorize the forms for the most important irregular verbs (ser, estar, ir, ter, etc.).</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c1228bde248191902a423b11197f1f-irregular-verb-drill" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-reflexive-verbs" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a2"><div class="p-6 flex-grow"><span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span><h2 class="text-xl font-bold text-slate-900 mb-2">📚 Reflexive Verbs Drill</h2><p class="text-slate-600 text-base flex-grow">Practice choosing the correct reflexive pronoun (`me`, `se`, `nos`) to match the subject.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c1d82c6f348191a9be65fe79b8a8d7-reflexive-verbs-drill" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-immediate-future" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="a1"><div class="p-6 flex-grow"><span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span><h2 class="text-xl font-bold text-slate-900 mb-2">💡 Immediate Future Drill</h2><p class="text-slate-600 text-base flex-grow">Master the "going to" future (`ir` + infinitive), the most common future form.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c1dabc6b048191a4d4b8d14b022b68-immediate-future-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-present-continuous" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="a2"><div class="p-6 flex-grow"><span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span><h2 class="text-xl font-bold text-slate-900 mb-2">💡 Present Continuous Tense</h2><p class="text-slate-600 text-base flex-grow">Master the Portuguese "-ing" form (`-ndo`) using `estar` + gerund.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c1e0a7746c8191b148791ce4df4f00-present-continuous-tense-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-imperfect-tense" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1"><div class="p-6 flex-grow"><span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span><h2 class="text-xl font-bold text-slate-900 mb-2">💡 Imperfect Tense Drill</h2><p class="text-slate-600 text-base flex-grow">Practice the simple form ("used to do"), the past continuous ("was doing"), and the past intent ("was going to do").</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c200e16c108191991fabf5d0f5f790-imperfect-tense-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-future-tense" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1"><div class="p-6 flex-grow"><span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span><h2 class="text-xl font-bold text-slate-900 mb-2">💡 Future Tense Drill</h2><p class="text-slate-600 text-base flex-grow">Master the Portuguese "will" tense (`-ei`, `-á` endings). Covers regular and key irregular verbs.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c2070450a08191bdf2e55f512949a8-future-tense-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-conditional-tense" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1"><div class="p-6 flex-grow"><span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span><h2 class="text-xl font-bold text-slate-900 mb-2">💡 Conditional Tense Drill</h2><p class="text-slate-600 text-base flex-grow">Master the Portuguese "would" tense (`-ia` endings). Covers regular and key irregular verbs.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c20fe3ebfc81919b22fb21541b2f7a-conditional-tense-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-present-subjunctive" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1"><div class="p-6 flex-grow"><span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span><h2 class="text-xl font-bold text-slate-900 mb-2">💡 Present Subjunctive Drill</h2><p class="text-slate-600 text-base flex-grow">Master the subjunctive after triggers like `Espero que...` and `Quero que...`.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c21658b9d08191b9faf99491dee196-present-subjunctive-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-imperfect-subjunctive" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b2"><div class="p-6 flex-grow"><span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span><h2 class="text-xl font-bold text-slate-900 mb-2">💡 Imperfect Subjunctive Drill</h2><p class="text-slate-600 text-base flex-grow">Master hypothetical "if" clauses (`Se eu fosse...`) for regular and irregular verbs.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c234f932608191a7fe7a1dbca53507-imperfect-subjunctive-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-future-subjunctive" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b2"><div class="p-6 flex-grow"><span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span><h2 class="text-xl font-bold text-slate-900 mb-2">💡 Future Subjunctive Drill</h2><p class="text-slate-600 text-base flex-grow">Master hypothetical future situations using `Quando...` and `Se...`.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c238f1da2881919e42deb77e1395e1-future-subjunctive-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-imperative" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="tenses" data-cefr="b1"><div class="p-6 flex-grow"><span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Tenses & Structures</span><h2 class="text-xl font-bold text-slate-900 mb-2">💡 Imperative Drill</h2><p class="text-slate-600 text-base flex-grow">Master the Portuguese command form. Tests the formal (`fale`) and provides notes on the spoken form (`fala`).</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c23bb180b481918200c55455f5c14b-imperative-drill" target="_blank" class="block w-full text-center bg-cyan-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-cyan-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-noun-plurals" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a1"><div class="p-6 flex-grow"><span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Noun Plural Tutor</h2><p class="text-slate-600 text-base flex-grow">Master the rules for forming noun plurals, with analogies for Spanish speakers.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68a882666ed08191b9c99f161a0310a8-noun-plural-tutor?model=gpt-5" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-adjective-agreement" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a1"><div class="p-6 flex-grow"><span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Adjective Gender & Number Agreement</h2><p class="text-slate-600 text-base flex-grow">Practice making adjectives match the gender and number of the nouns they describe.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c23e035618819185c3b3a400b58880-adjective-agreement-drill?model=gpt-5" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-demonstratives" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="b1"><div class="p-6 flex-grow"><span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Demonstrative Pronouns Drill</h2><p class="text-slate-600 text-base flex-grow">Master the tricky distinction between `este` (near me), `esse` (near you), and `aquele` (over there).</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c251a602148191becd5a26169c727e-demonstratives-drill?model=gpt-5" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-ir-transportation" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a1"><div class="p-6 flex-grow"><span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔗 'Ir' + Transportation Drill</h2><p class="text-slate-600 text-base flex-grow">Practice using the verb 'ir' (to go) with different modes of transportation like 'de carro', 'a pé', and 'de Uber'.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c253cd531c819193e9f7a6e862b116-ir-transport-tutor" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-advanced-demonstratives" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="b2"><div class="p-6 flex-grow"><span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Advanced Demonstratives</h2><p class="text-slate-600 text-base flex-grow">Master conversational uses, including discourse proximity and the common 'este' -> 'esse' conflation.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c252ec16648191baf129f287673588-advanced-demonstratives" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-crase" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="b1"><div class="p-6 flex-grow"><span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Crase (`à`) Tutor</h2><p class="text-slate-600 text-base flex-grow">A dedicated drill for mastering the crase. Learn when to use `à` and `às` with instant feedback.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c25b6d0b2c8191b164d08f2d8e1353-crase-drill" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-contractions-de" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a2"><div class="p-6 flex-grow"><span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Contraction Trainer (`dele`/`dela`)</h2><p class="text-slate-600 text-base flex-grow">Practice possessives (`his book`) and verb objects (`I like him`).</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c30097c5e48191b00d958baf0771a9-dele-dela-deles-delas" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-contractions-em" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a2"><div class="p-6 flex-grow"><span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Contraction Trainer (`nele`/`nela`)</h2><p class="text-slate-600 text-base flex-grow">Practice location (`in it`) and verb objects (`I think about him`).</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c30b7ff3a48191b69acb4dd4953656-nele-nela-neles-nelas" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-contractions-articles" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a2"><div class="p-6 flex-grow"><span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Contractions with Articles (de/em)</h2><p class="text-slate-600 text-base flex-grow">Learn how “de” and “em” contract with articles using step-by-step fill-in-the-blank drills.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c30c8714b081919c37309e9fdee081-contraction-trainer-de-em" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-syllable-stress" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="pronunciation" data-cefr="b1"><div class="p-6 flex-grow"><span class="inline-block bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Pronunciation</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔊 Syllable Stress Drill</h2><p class="text-slate-600 text-base flex-grow">Master Portuguese syllable stress for perfect pronunciation. Learn the rules for stress and accent marks.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c31b6ef1fc8191a815504142eeaa46-syllable-stress-drill" target="_blank" class="block w-full text-center bg-orange-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-orange-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-phonetic-tutor" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="pronunciation" data-cefr="b2"><div class="p-6 flex-grow"><span class="inline-block bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Pronunciation</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔊 PT-BR Phonetic Tutor</h2><p class="text-slate-600 text-base flex-grow">Get detailed feedback on your pronunciation. Covers all the sounds of Portuguese.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c3ac2c95e881918061de6ae3fab4f4-phonetic-tutor" target="_blank" class="block w-full text-center bg-orange-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-orange-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-colloquial-speech" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="b2"><div class="p-6 flex-grow"><span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span><h2 class="text-xl font-bold text-slate-900 mb-2">💬 Colloquial Speech Drill</h2><p class="text-slate-600 text-base flex-grow">Master the most common reductions and mergers of spoken Portuguese.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c3c587c6fc8191877d9bdac5456510-colloquial-speech-bp" target="_blank" class="block w-full text-center bg-teal-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-teal-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-conversational-answers" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="a2"><div class="p-6 flex-grow"><span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span><h2 class="text-xl font-bold text-slate-900 mb-2">💬 Conversational Answers Drill</h2><p class="text-slate-600 text-base flex-grow">Learn to answer yes/no questions by repeating the verb. Covers simple and emphatic answers.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c3af4d8df8819189cc01a871f1d7e0-yes-no-replies" target="_blank" class="block w-full text-center bg-teal-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-teal-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-self-introduction" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="a1"><div class="p-6 flex-grow"><span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span><h2 class="text-xl font-bold text-slate-900 mb-2">💬 Self-Introduction Drill</h2><p class="text-slate-600 text-base flex-grow">For absolute beginners. Practice building your first sentences (`Eu sou...`, `Eu moro...`, etc.).</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c3c1e8b54881918e745a7e8e143fb4-self-introduction-drill" target="_blank" class="block w-full text-center bg-teal-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-teal-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-portuguese-for-spanish" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="b1"><div class="p-6 flex-grow"><span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span><h2 class="text-xl font-bold text-slate-900 mb-2">💬 Portuguese for Spanish Speakers</h2><p class="text-slate-600 text-base flex-grow">Leverage your Spanish to learn Portuguese faster. This drill focuses on false friends, pronunciation, and grammar gaps.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c3c413d418819190babd76e6a9f9e6-portuguese-for-spanish-speakers" target="_blank" class="block w-full text-center bg-teal-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-teal-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-grammar-for-spanish" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="b1"><div class="p-6 flex-grow"><span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span><h2 class="text-xl font-bold text-slate-900 mb-2">💬 Grammar for Spanish Speakers</h2><p class="text-slate-600 text-base flex-grow">A focused drill on the key grammatical differences between Spanish and Portuguese, like contractions and pronoun placement.</p></div><div class="p-6 bg-slate-50"><a href="#" target="_blank" class="block w-full text-center bg-gray-400 text-white rounded-lg px-4 py-2.5 font-semibold cursor-not-allowed" aria-disabled="true">Coming Soon</a></div></div>
+                <div id="no-results" class="hidden col-span-1 md:col-span-2 lg:col-span-3 text-center py-16"><h3 class="text-2xl font-semibold text-slate-600">Nenhum resultado</h3><p class="text-slate-500 mt-2">No drills matched your search. Try removing some filters or changing your search term.</p></div>
             </div>
         </main>
     </div>
 
-    <!-- Added a simple footer to make the page feel more complete -->
     <footer class="bg-slate-100 border-t border-slate-200">
         <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-center text-slate-500">
             <p>&copy; 2025 Gil Klein. All Rights Reserved.</p>
@@ -482,6 +231,11 @@
             const drillCards = document.querySelectorAll('.drill-card');
             const searchInput = document.getElementById('search-input');
             const noResultsMessage = document.getElementById('no-results');
+            
+            // NEW: Path display logic variables
+            const pathTriggers = document.getElementById('path-triggers');
+            const pathDisplayContainer = document.getElementById('path-display-container');
+            const pathButtons = pathTriggers.querySelectorAll('.path-btn');
 
             function filterAndSearch() {
                 const activeCefrFilter = cefrFilterControls.querySelector('.active').dataset.filter;
@@ -537,7 +291,52 @@
 
             searchInput.addEventListener('input', filterAndSearch);
             
-            // Initial filter on load
+            // NEW: Learning Path display logic
+            pathTriggers.addEventListener('click', (event) => {
+                const targetButton = event.target.closest('.path-btn');
+                if (!targetButton) return;
+
+                const pathId = targetButton.dataset.pathId;
+                const wasActive = targetButton.classList.contains('bg-indigo-600');
+
+                // Reset all path buttons
+                pathButtons.forEach(btn => {
+                    btn.classList.remove('bg-indigo-600', 'text-white');
+                    btn.classList.add('bg-white', 'text-slate-700');
+                });
+
+                // Clear the display container
+                pathDisplayContainer.innerHTML = '';
+
+                // If the button was not active, make it active and show the path
+                if (!wasActive) {
+                    targetButton.classList.add('bg-indigo-600', 'text-white');
+                    targetButton.classList.remove('bg-white', 'text-slate-700');
+                    const pathTemplate = document.getElementById(pathId);
+                    if (pathTemplate) {
+                        pathDisplayContainer.innerHTML = pathTemplate.outerHTML;
+                    }
+                }
+            });
+
+            // NEW: Event delegation for path-link clicks
+            pathDisplayContainer.addEventListener('click', (event) => {
+                const pathLink = event.target.closest('.path-link');
+                if (pathLink) {
+                    event.preventDefault();
+                    const targetId = pathLink.dataset.targetId;
+                    const targetCard = document.getElementById(targetId);
+
+                    if (targetCard) {
+                        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        targetCard.classList.add('highlight');
+                        setTimeout(() => {
+                            targetCard.classList.remove('highlight');
+                        }, 2500);
+                    }
+                }
+            });
+
             filterAndSearch();
         });
     </script>
