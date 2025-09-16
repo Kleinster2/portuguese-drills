@@ -39,7 +39,11 @@
             box-shadow: 0 0 0 3px #3b82f6; /* blue-500 */
             transform: translateY(-4px) scale(1.02);
         }
-        /* Styles for the dynamically displayed learning path */
+        /* FIX: Add a specific style for a card that is both highlighted and hovered */
+        .drill-card.highlight:hover {
+            box-shadow: 0 0 0 3px #3b82f6, 0 25px 50px -12px rgb(0 0 0 / 0.25); /* Combines blue ring with shadow-2xl */
+            transform: translateY(-6px) scale(1.03); /* A slightly more pronounced effect */
+        }
         #path-display-container .learning-path {
             opacity: 0;
             transform: translateY(10px);
@@ -56,23 +60,17 @@
             padding-left: 2rem;
             list-style: none;
         }
-        .learning-path ol::before {
-            content: '';
-            position: absolute;
-            left: 0.5rem;
-            top: 0.25rem;
-            bottom: 0.25rem;
-            width: 2px;
-            background-color: #cbd5e1; /* slate-300 */
-        }
-        .learning-path li {
+        
+        .learning-path > ol > li {
             position: relative;
-            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem; 
         }
-        .learning-path li:last-child {
-            margin-bottom: 0;
+        .learning-path > ol > li:last-child {
+            padding-bottom: 0;
         }
-        .learning-path li::before {
+        
+        /* Node style (the circle) for TOP-LEVEL items only */
+        .learning-path > ol > li::before {
             content: '';
             position: absolute;
             left: -1.75rem;
@@ -82,6 +80,48 @@
             border-radius: 9999px;
             background-color: #fff;
             border: 3px solid #6366f1; /* indigo-600 */
+            z-index: 1;
+        }
+
+        /* Connecting line for TOP-LEVEL items only */
+        .learning-path > ol > li::after {
+            content: '';
+            position: absolute;
+            left: -1.2rem;
+            top: 0.5rem;
+            bottom: -0.5rem; 
+            width: 2px;
+            background-color: #6366f1; /* Solid indigo for core path */
+        }
+        
+        .learning-path > ol > li:last-child::after {
+            display: none;
+        }
+
+        /* Style for supplemental path nodes (TOP-LEVEL) */
+        .learning-path > ol > li.supplemental-step::before {
+            background-color: #f8fafc; /* bg-slate-50 */
+            border: 2px dashed #94a3b8; /* slate-400 */
+        }
+        
+        .learning-path > ol > li.supplemental-step::after {
+            background-image: linear-gradient(to bottom, #94a3b8 60%, transparent 40%);
+            background-size: 2px 8px;
+            background-repeat: repeat-y;
+            background-color: transparent; /* Remove solid color */
+        }
+
+        /* NEW: Styles for Learning Bundles */
+        .learning-bundle {
+            background-color: #f8fafc; /* slate-50 */
+            border: 1px solid #e2e8f0; /* slate-200 */
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+        .learning-bundle-title {
+            font-weight: 600;
+            color: #475569; /* slate-600 */
+            margin-bottom: 0.75rem;
         }
     </style>
 </head>
@@ -93,7 +133,7 @@
             <div class="py-10 px-4 bg-gradient-to-br from-white to-slate-100 rounded-3xl shadow-sm">
                 <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900">Portuguese Grammar Drills</h1>
                 <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">
-                    Bem-vindo! Select a learning path or use the filters below to find a specific drill.
+                    Boas-vindas! Select a learning path or use the filters below to find a specific drill.
                 </p>
             </div>
         </header>
@@ -103,41 +143,44 @@
             <div id="a1-path" class="learning-path bg-white p-6 rounded-2xl shadow-lg">
                 <h3 class="text-2xl font-bold text-indigo-600 mb-6 border-b-2 border-indigo-200 pb-3">A1 Path</h3>
                 <ol>
-                    <li><h4 class="font-semibold text-slate-700 mb-2">Introduction</h4><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-self-introduction">Self-Introduction Drill</a></li>
-                    <li><h4 class="font-semibold text-slate-700 mb-2">Regular Verbs</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-ar-verbs">Regular -ar Verbs</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-er-verbs">Regular -er Verbs</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-ir-verbs">Regular -ir Verbs</a></li></ul></li>
-                    <li><h4 class="font-semibold text-slate-700 mb-2">Core Concepts</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-irregular-verbs">Irregular Verbs</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-immediate-future">Immediate Future</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-noun-plurals">Noun Plurals</a></li></ul></li>
+                    <li><a href="#" class="path-link text-blue-600 hover:underline font-semibold" data-target-id="drill-self-introduction">Self-Introduction Drill</a></li>
+                    <li><div class="learning-bundle"><h4 class="learning-bundle-title">Bundle: Regular Verbs</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-ar-verbs">Regular -ar Verbs</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-er-verbs">Regular -er Verbs</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-ir-verbs">Regular -ir Verbs</a></li></ul></div></li>
+                    <li><a href="#" class="path-link text-blue-600 hover:underline font-semibold" data-target-id="drill-irregular-verbs">Irregular Verbs Drill</a></li>
+                    <li><a href="#" class="path-link text-blue-600 hover:underline font-semibold" data-target-id="drill-contractions-articles">Contractions with Articles (de/em)</a></li>
+                    <li><div class="learning-bundle"><h4 class="learning-bundle-title">Bundle: Core Concepts</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-immediate-future">Immediate Future</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-noun-plurals">Noun Plurals</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-adjective-agreement">Adjective Agreement</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-ir-transportation">'Ir' + Transportation</a></li></ul></div></li>
                 </ol>
             </div>
             <div id="a2-path" class="learning-path bg-white p-6 rounded-2xl shadow-lg">
                 <h3 class="text-2xl font-bold text-indigo-600 mb-6 border-b-2 border-indigo-200 pb-3">A2 Path</h3>
                 <ol>
-                    <li><h4 class="font-semibold text-slate-700 mb-2">Expanding Verbs</h4><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-reflexive-verbs">Reflexive Verbs</a></li>
-                    <li><h4 class="font-semibold text-slate-700 mb-2">Contractions</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-contractions-de">Contractions (de +)</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-contractions-em">Contractions (em +)</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-contractions-articles">Contractions (Articles)</a></li></ul></li>
-                    <li><h4 class="font-semibold text-slate-700 mb-2">Present Actions</h4><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-present-continuous">Present Continuous</a></li>
+                    <li><a href="#" class="path-link text-blue-600 hover:underline font-semibold" data-target-id="drill-reflexive-verbs">Reflexive Verbs Drill</a></li>
+                    <li><div class="learning-bundle"><h4 class="learning-bundle-title">Bundle: Contractions w/ Pronouns</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-contractions-de">Contractions (de + pronouns)</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-contractions-em">Contractions (em + pronouns)</a></li></ul></div></li>
+                    <li><a href="#" class="path-link text-blue-600 hover:underline font-semibold" data-target-id="drill-present-continuous">Present Continuous Tense</a></li>
+                    <li class="supplemental-step"><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-conversational-answers">Supplemental: Conversational Answers</a></li>
                 </ol>
             </div>
             <div id="b1-path" class="learning-path bg-white p-6 rounded-2xl shadow-lg">
                 <h3 class="text-2xl font-bold text-indigo-600 mb-6 border-b-2 border-indigo-200 pb-3">B1 Path</h3>
                 <ol>
-                    <li><h4 class="font-semibold text-slate-700 mb-2">Past & Future Tenses</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-imperfect-tense">Imperfect Tense</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-future-tense">Future Tense</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-conditional-tense">Conditional Tense</a></li></ul></li>
-                    <li><h4 class="font-semibold text-slate-700 mb-2">Key Grammar</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-crase">Crase (à) Tutor</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-demonstratives">Demonstratives</a></li></ul></li>
-                    <li><h4 class="font-semibold text-slate-700 mb-2">The Subjunctive</h4><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-present-subjunctive">Present Subjunctive</a></li>
+                    <li><div class="learning-bundle"><h4 class="learning-bundle-title">Bundle: Past & Future Tenses</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-imperfect-tense">Imperfect Tense</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-future-tense">Future Tense</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-conditional-tense">Conditional Tense</a></li></ul></div></li>
+                    <li><div class="learning-bundle"><h4 class="learning-bundle-title">Bundle: Key Grammar</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-crase">Crase (à) Tutor</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-demonstratives">Demonstratives</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-imperative">Imperative (Commands)</a></li></ul></div></li>
+                    <li><a href="#" class="path-link text-blue-600 hover:underline font-semibold" data-target-id="drill-present-subjunctive">Present Subjunctive Drill</a></li>
+                    <li class="supplemental-step"><div class="learning-bundle"><h4 class="learning-bundle-title italic">Supplemental Bundle</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-syllable-stress">Syllable Stress</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-portuguese-for-spanish">For Spanish Speakers</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-grammar-for-spanish">Grammar for Spanish Speakers</a></li></ul></div></li>
                 </ol>
             </div>
             <div id="b2-path" class="learning-path bg-white p-6 rounded-2xl shadow-lg">
                 <h3 class="text-2xl font-bold text-indigo-600 mb-6 border-b-2 border-indigo-200 pb-3">B2 Path</h3>
                 <ol>
-                    <li><h4 class="font-semibold text-slate-700 mb-2">Advanced Subjunctive</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-imperfect-subjunctive">Imperfect Subjunctive</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-future-subjunctive">Future Subjunctive</a></li></ul></li>
-                    <li><h4 class="font-semibold text-slate-700 mb-2">Advanced Grammar</h4><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-advanced-demonstratives">Adv. Demonstratives</a></li>
-                    <li><h4 class="font-semibold text-slate-700 mb-2">Sounding Natural</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-colloquial-speech">Colloquial Speech</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-phonetic-tutor">Phonetic Tutor</a></li></ul></li>
+                    <li><div class="learning-bundle"><h4 class="learning-bundle-title">Bundle: Advanced Subjunctive</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-imperfect-subjunctive">Imperfect Subjunctive</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-future-subjunctive">Future Subjunctive</a></li></ul></div></li>
+                    <li><a href="#" class="path-link text-blue-600 hover:underline font-semibold" data-target-id="drill-advanced-demonstratives">Advanced Demonstratives Drill</a></li>
+                    <li><div class="learning-bundle"><h4 class="learning-bundle-title">Bundle: Sounding Natural</h4><ul class="space-y-1 ml-4 list-disc list-inside text-slate-600"><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-colloquial-speech">Colloquial Speech</a></li><li><a href="#" class="path-link text-blue-600 hover:underline" data-target-id="drill-phonetic-tutor">Phonetic Tutor</a></li></ul></div></li>
                 </ol>
             </div>
         </div>
 
         <main>
-            <h2 class="text-3xl font-bold text-center text-slate-800 mb-8 pt-8 border-t border-slate-200">Drill Explorer</h2>
             <!-- Search Bar -->
-            <div class="mb-8 max-w-md mx-auto">
+            <div class="my-8 max-w-md mx-auto">
                 <label for="search-input" class="sr-only">Search for a drill</label>
                 <input type="text" id="search-input" placeholder="Search for a drill..." class="w-full px-5 py-3 text-lg text-slate-700 bg-white border border-slate-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
             </div>
@@ -180,7 +223,6 @@
 
             <!-- Drill Cards Grid -->
             <div id="drill-grid" class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- All drill cards from before... -->
                 <div id="drill-ar-verbs" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1"><div class="p-6 flex-grow"><span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span><h2 class="text-xl font-bold text-slate-900 mb-2">📚 Regular `-ar` Verb Drill</h2><p class="text-slate-600 text-base flex-grow">Practice the present and simple past of `-ar` verbs.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c11437be1881918610dff3e74a6301-regular-ar-verb-tutor" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a></div></div>
                 <div id="drill-er-verbs" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1"><div class="p-6 flex-grow"><span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span><h2 class="text-xl font-bold text-slate-900 mb-2">📚 Regular `-er` Verb Drill</h2><p class="text-slate-600 text-base flex-grow">Master the second regular verb conjugation.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c1175a9b3c8191a0d9f534de01a2d7-regular-er-verb-tutor" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a></div></div>
                 <div id="drill-ir-verbs" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="verbs" data-cefr="a1"><div class="p-6 flex-grow"><span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Core Verbs</span><h2 class="text-xl font-bold text-slate-900 mb-2">📚 Regular `-ir` Verb Drill</h2><p class="text-slate-600 text-base flex-grow">Complete your knowledge of regular verb endings.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c1183593308191b3992e8d2ef9324e-regular-ir-verb-tutor" target="_blank" class="block w-full text-center bg-blue-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-blue-700 transition-colors">Start Drill</a></div></div>
@@ -203,7 +245,7 @@
                 <div id="drill-crase" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="b1"><div class="p-6 flex-grow"><span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Crase (`à`) Tutor</h2><p class="text-slate-600 text-base flex-grow">A dedicated drill for mastering the crase. Learn when to use `à` and `às` with instant feedback.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c25b6d0b2c8191b164d08f2d8e1353-crase-drill" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a></div></div>
                 <div id="drill-contractions-de" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a2"><div class="p-6 flex-grow"><span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Contraction Trainer (`dele`/`dela`)</h2><p class="text-slate-600 text-base flex-grow">Practice possessives (`his book`) and verb objects (`I like him`).</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c30097c5e48191b00d958baf0771a9-dele-dela-deles-delas" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a></div></div>
                 <div id="drill-contractions-em" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a2"><div class="p-6 flex-grow"><span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Contraction Trainer (`nele`/`nela`)</h2><p class="text-slate-600 text-base flex-grow">Practice location (`in it`) and verb objects (`I think about him`).</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c30b7ff3a48191b69acb4dd4953656-nele-nela-neles-nelas" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a></div></div>
-                <div id="drill-contractions-articles" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a2"><div class="p-6 flex-grow"><span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Contractions with Articles (de/em)</h2><p class="text-slate-600 text-base flex-grow">Learn how “de” and “em” contract with articles using step-by-step fill-in-the-blank drills.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c30c8714b081919c37309e9fdee081-contraction-trainer-de-em" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a></div></div>
+                <div id="drill-contractions-articles" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="grammar" data-cefr="a1"><div class="p-6 flex-grow"><span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Grammar & Prepositions</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔗 Contractions with Articles (de/em)</h2><p class="text-slate-600 text-base flex-grow">Learn how “de” and “em” contract with articles using step-by-step fill-in-the-blank drills.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c30c8714b081919c37309e9fdee081-contraction-trainer-de-em" target="_blank" class="block w-full text-center bg-purple-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-purple-700 transition-colors">Start Drill</a></div></div>
                 <div id="drill-syllable-stress" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="pronunciation" data-cefr="b1"><div class="p-6 flex-grow"><span class="inline-block bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Pronunciation</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔊 Syllable Stress Drill</h2><p class="text-slate-600 text-base flex-grow">Master Portuguese syllable stress for perfect pronunciation. Learn the rules for stress and accent marks.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c31b6ef1fc8191a815504142eeaa46-syllable-stress-drill" target="_blank" class="block w-full text-center bg-orange-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-orange-700 transition-colors">Start Drill</a></div></div>
                 <div id="drill-phonetic-tutor" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="pronunciation" data-cefr="b2"><div class="p-6 flex-grow"><span class="inline-block bg-orange-100 text-orange-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Pronunciation</span><h2 class="text-xl font-bold text-slate-900 mb-2">🔊 PT-BR Phonetic Tutor</h2><p class="text-slate-600 text-base flex-grow">Get detailed feedback on your pronunciation. Covers all the sounds of Portuguese.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c3ac2c95e881918061de6ae3fab4f4-phonetic-tutor" target="_blank" class="block w-full text-center bg-orange-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-orange-700 transition-colors">Start Drill</a></div></div>
                 <div id="drill-colloquial-speech" class="drill-card flex flex-col bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" data-topic="conversation" data-cefr="b2"><div class="p-6 flex-grow"><span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">Conversational Skills</span><h2 class="text-xl font-bold text-slate-900 mb-2">💬 Colloquial Speech Drill</h2><p class="text-slate-600 text-base flex-grow">Master the most common reductions and mergers of spoken Portuguese.</p></div><div class="p-6 bg-slate-50"><a href="https://chatgpt.com/g/g-68c3c587c6fc8191877d9bdac5456510-colloquial-speech-bp" target="_blank" class="block w-full text-center bg-teal-600 text-white rounded-lg px-4 py-2.5 font-semibold hover:bg-teal-700 transition-colors">Start Drill</a></div></div>
@@ -319,7 +361,7 @@
                 }
             });
 
-            // NEW: Event delegation for path-link clicks
+            // Event delegation for path-link clicks
             pathDisplayContainer.addEventListener('click', (event) => {
                 const pathLink = event.target.closest('.path-link');
                 if (pathLink) {
@@ -327,12 +369,15 @@
                     const targetId = pathLink.dataset.targetId;
                     const targetCard = document.getElementById(targetId);
 
+                    // Remove highlight from any other card
+                    const currentlyHighlighted = document.querySelector('.drill-card.highlight');
+                    if (currentlyHighlighted) {
+                        currentlyHighlighted.classList.remove('highlight');
+                    }
+
                     if (targetCard) {
                         targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         targetCard.classList.add('highlight');
-                        setTimeout(() => {
-                            targetCard.classList.remove('highlight');
-                        }, 2500);
                     }
                 }
             });
